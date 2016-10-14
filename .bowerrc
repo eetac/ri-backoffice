@@ -1,4 +1,4 @@
 {
-  "cwd": "lib/public/admin",
+  "directory": "src/bower_components",
   "interactive": false
 }
