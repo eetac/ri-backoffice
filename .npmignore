@@ -4,8 +4,4 @@
 Gruntfile.js
 
 # Ignore sources on package.json
-lib/public/admin/angular-*/
-lib/public/admin/injector-assets
-lib/public/admin/bower_components
-lib/public/admin/ngf-upload-patched
-
+src
