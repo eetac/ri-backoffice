@@ -5,9 +5,9 @@ node_js:
   - '6'
 
 script:
-  - "grunt"
+  - "./command.sh build"
 
-before_deploy: "grunt"
+before_deploy: "./command.sh build"
 
 deploy:
   provider: npm
