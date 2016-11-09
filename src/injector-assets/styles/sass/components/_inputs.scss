@@ -11,7 +11,7 @@ Forms
 /* Form inputs */
 
 .form-control {  
-    height: auto;
+    //height: auto;
     font-size: 14px;
     font-weight: normal;
     color: $input-color;
@@ -36,9 +36,9 @@ Forms
         background-color: $input-bg-disabled;
     }
 
-    &.height-auto {
-        height: auto;
-    }
+    //&.height-auto {
+    //    height: auto;
+    //}
 
     &.form-control-solid {
         background-color: #F1F3F8;
