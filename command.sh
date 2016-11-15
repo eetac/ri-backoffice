@@ -29,6 +29,7 @@ install() {
     check_exit
     log "Install ENDED"
     build
+    check_exit
 }
 
 build() {
