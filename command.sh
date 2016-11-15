@@ -21,20 +21,18 @@ check_exit() {
         exit $rc;
     fi
 }
-install(){
+install() {
     log "Install STARTED"
     npm install
     check_exit
     $(npm bin)/bower install --allow-root
     check_exit
-    $(npm bin)/grunt
-    check_exit
     log "Install ENDED"
+    build
 }
 
 build() {
     log "Build STARTED"
-    install
     $(npm bin)/grunt
     log "Build ENDED"
 }

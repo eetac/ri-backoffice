@@ -116,9 +116,6 @@
                     var page = extensions.pages[i];
 
                     if (page.backoffice) {
-
-                        console.log(page);
-
                         $routeProvider.when('/' + page.url, {
                             templateUrl: page.template,
                             controller: page.controller,

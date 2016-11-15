@@ -6,6 +6,14 @@
         var modelName;
         $scope.$on('$routeChangeSuccess', function (event, current) {
             modelName = current.params.schema;
+
+            /* JUAN: Continue here to implement sharding selector for custom pages
+             if(modelName == undefined) {
+                //ÑAPA para probar
+                modelName = "Ingredient";
+            }
+            */
+
             if (modelName) {
                 models.getModel(modelName, function (m) {
                     if (m.config.shard) {
@@ -15,13 +23,13 @@
 
                         if (models.getShard(modelName)) {
                             $scope.shardKeyText = 'Using ' + models.getShard(modelName).key + ' ' + models.getShard(modelName).value;
-                        } else{
+                        } else {
                             if(m.config.shard.filtered){
                                 $scope.locked = true;
                                 $scope.setShard($scope.shardValues[0]);
-                            } else{
+                            } else {
                                 $scope.locked = false;
-                            }                           
+                            }
                         }
 
                     } else {

@@ -92,7 +92,6 @@
             $rootScopeProvider.digestTtl(15);
         }])
         .run(['$rootScope', 'configs', function ($rootScope, configs) {
-            console.log(configs);
             $rootScope.configs = configs;
         }]);
 
@@ -199,6 +198,7 @@
         return $.when.apply($, _arr);
     };
 })();
+
 (function () {
     'use strict';
 
@@ -318,9 +318,6 @@
                     var page = extensions.pages[i];
 
                     if (page.backoffice) {
-
-                        console.log(page);
-
                         $routeProvider.when('/' + page.url, {
                             templateUrl: page.template,
                             controller: page.controller,
@@ -340,6 +337,7 @@
             $routeProvider.otherwise({redirectTo: '/'});
         }]);
 }());
+
 (function () {
     'use strict';
 
@@ -1654,16 +1652,13 @@
                     $scope.isOpen = false;
 
                     var render = function () {
-                        console.log("in render");
                         $scope.sections = new Sections();
 
-                        //$scope.customMenu = [];
                         angular.forEach(customMenu, function (elem) {
                             $scope.sections.add(elem.section, elem.title, elem);
                         });
 
                         models.getModels(function (m) {
-                            console.log("in callback");
                             angular.forEach(m, function (schema) {
                                 models.getModelConfig(schema, function (config) {
                                     if (config.isSingle) {
@@ -1677,9 +1672,6 @@
                                     } else {
                                         config.clickTo = "model/" + schema;
                                     }
-
-                                    //$scope.sections[config.section] = $scope.sections[config.section] || {};
-                                    //$scope.sections[config.section][schema] = config;
                                     $scope.sections.add(config.section, schema, config);
                                 });
                             });
@@ -1689,7 +1681,6 @@
 
                     render();
                     $rootScope.$on('invalidate', function () {
-                        console.log("invalidate side menu");
                         render();
                     });
 
@@ -1698,7 +1689,6 @@
                     };
 
                     $scope.click = function (section, name, conf) {
-                        //console.log(section);
                         $scope.parentSchema = section;
                         $scope.actualSchema = name;
                         $scope.actualSection = section;
@@ -1708,14 +1698,6 @@
                             $window.location.href = conf.url;
                         }
                     };
-
-                    ////$scope.customMenu = [];
-                    //angular.forEach(customMenu, function (elem) {
-                    //    $scope.sections[elem.section] = $scope.sections[elem.section] || {};
-                    //    $scope.sections[elem.section][elem.name] = {};
-                    //    $scope.sections[elem.section][elem.name].clickTo = elem.url;
-                    //});
-
 
                     $scope.isInstanceOf = function (obj) {
                         return (obj instanceof Section);
@@ -1762,17 +1744,6 @@ var Sections = function () {
     };
 };
 
-//var sections = new Sections();
-//sections.add('accordeon', 'model1', 'config1');
-//sections.add('accordeon', 'model2', 'config2');
-//sections.add('accordeon2', 'model3', 'config3');
-//sections.add('accordeon.subaccordeaon', 'model4', 'config4');
-//sections.add('accordeon.subaccordeaon2', 'model5', 'config5');
-//sections.add('accordeon.subaccordeaon2', 'model6', 'config6');
-//var a = sections.get();
-//console.log(a);
-//
-//console.log(a.accordeon instanceof Section);
 (function () {
     'use strict';
     angular.module('injectorApp')
@@ -2366,7 +2337,9 @@ var Sections = function () {
                     $location.path('/model/' + modelName);
                 } else {
                     $scope.model = {};
+                    var m_copy = angular.copy(m);
                     $scope.m = m;
+                    $scope.m_copy = m_copy;
                     $scope.action = "create";
                     $controller('FormController', {$scope: $scope}); //This works
                 }
@@ -2405,12 +2378,14 @@ var Sections = function () {
                     $scope.prune(document);
                     $scope.action = "update";
                     $scope.model = document || {};
+                    var m_copy = angular.copy(m);
                     $scope.m = m;
+                    $scope.m_copy = m_copy;
                     $controller('FormController', {$scope: $scope}); //This works
                 });
             });
 
-            //We made this in client because is an specefic management of angular-schema-form
+            //We made this in client because is an specific management of angular-schema-form
             $scope.prune = function (document) {
                 for (var key in document) {
                     var elem = document[key];
@@ -2424,6 +2399,7 @@ var Sections = function () {
             };
         }]);
 }());
+
 (function () {
     'use strict';
 
@@ -2438,16 +2414,25 @@ var Sections = function () {
             function walkThroughSchema(schema) {
                 var keys = Object.keys(schema);
                 for (var i in keys) {
-                    if(schema[keys[i]]){
+                    if(schema[keys[i]]) {
+                        if (schema[keys[i]].editOnCreate) {
+                            var action = $scope.action.toLowerCase();
+                            schema[keys[i]].readonly = !(action === "create");
+                        }
+
                         if (schema[keys[i]].i18nTitle) {
                             schema[keys[i]].title = $translate.instant(schema[keys[i]].i18nTitle);
-                        } else if (angular.isObject(schema[keys[i]])) {
-                            walkThroughSchema(schema[keys[i]]);
+                        }
+
+                        var type = schema[keys[i]].type;
+                        if ((type === 'array' || type === 'object') && schema[keys[i]].properties) {
+                            walkThroughSchema(schema[keys[i]].properties);
                         }
                     }
                 }
             }
 
+            $scope.m = angular.copy($scope.m_copy);
             walkThroughSchema($scope.m.schema);
 
             $scope.schema = {
@@ -2481,7 +2466,6 @@ var Sections = function () {
             }, 0);
 
             $scope.schemaHREF = function () {
-                console.log("/model/" + modelName);
                 $location.path("/model/" + modelName);
                 $location.hash('');
             };
@@ -2626,6 +2610,7 @@ var Sections = function () {
             };
         }]);
 }());
+
 (function () {
     'use strict';
     angular.module('injectorApp')
@@ -2899,6 +2884,14 @@ var Sections = function () {
         var modelName;
         $scope.$on('$routeChangeSuccess', function (event, current) {
             modelName = current.params.schema;
+
+            /* JUAN: Continue here to implement sharding selector for custom pages
+             if(modelName == undefined) {
+                //ÑAPA para probar
+                modelName = "Ingredient";
+            }
+            */
+
             if (modelName) {
                 models.getModel(modelName, function (m) {
                     if (m.config.shard) {
@@ -2908,13 +2901,13 @@ var Sections = function () {
 
                         if (models.getShard(modelName)) {
                             $scope.shardKeyText = 'Using ' + models.getShard(modelName).key + ' ' + models.getShard(modelName).value;
-                        } else{
+                        } else {
                             if(m.config.shard.filtered){
                                 $scope.locked = true;
                                 $scope.setShard($scope.shardValues[0]);
-                            } else{
+                            } else {
                                 $scope.locked = false;
-                            }                           
+                            }
                         }
 
                     } else {
@@ -2946,6 +2939,7 @@ var Sections = function () {
         $scope.shardKey = undefined;
     }]);
 }());
+
 (function () {
     'use strict';
 

@@ -12,16 +12,25 @@
             function walkThroughSchema(schema) {
                 var keys = Object.keys(schema);
                 for (var i in keys) {
-                    if(schema[keys[i]]){
+                    if(schema[keys[i]]) {
+                        if (schema[keys[i]].editOnCreate) {
+                            var action = $scope.action.toLowerCase();
+                            schema[keys[i]].readonly = !(action === "create");
+                        }
+
                         if (schema[keys[i]].i18nTitle) {
                             schema[keys[i]].title = $translate.instant(schema[keys[i]].i18nTitle);
-                        } else if (angular.isObject(schema[keys[i]])) {
-                            walkThroughSchema(schema[keys[i]]);
+                        }
+
+                        var type = schema[keys[i]].type;
+                        if ((type === 'array' || type === 'object') && schema[keys[i]].properties) {
+                            walkThroughSchema(schema[keys[i]].properties);
                         }
                     }
                 }
             }
 
+            $scope.m = angular.copy($scope.m_copy);
             walkThroughSchema($scope.m.schema);
 
             $scope.schema = {
@@ -55,7 +64,6 @@
             }, 0);
 
             $scope.schemaHREF = function () {
-                console.log("/model/" + modelName);
                 $location.path("/model/" + modelName);
                 $location.hash('');
             };

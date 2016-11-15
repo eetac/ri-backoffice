@@ -8,7 +8,6 @@
             $rootScopeProvider.digestTtl(15);
         })
         .run(function ($rootScope, configs) {
-            console.log(configs);
             $rootScope.configs = configs;
         });
 

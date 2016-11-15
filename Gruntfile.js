@@ -210,7 +210,12 @@ module.exports = function (grunt) {
             options: {
                 banner: '/*! <%= config.appName %> <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
                 mangle: true,
-                preserveComments: false,
+                preserveComments: false
+                // Unmcomment following lines if you need to debug.
+                //mangle: false,
+                //preserveComments: true,
+                //compress: false,
+                //beautify: true
             },
             lib_build: {
                 options: {
