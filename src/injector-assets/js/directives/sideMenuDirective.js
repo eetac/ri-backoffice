@@ -27,16 +27,18 @@
                         models.getModels(function (m) {
                             angular.forEach(m, function (schema) {
                                 models.getModelConfig(schema, function (config) {
-                                    if (config.isSingle) {
-                                        models.getSingleModel(schema, function (doc) {
-                                            if (doc) {
-                                                config.clickTo = "model/" + schema + "/update/" + doc[config.id];
-                                            } else {
-                                                config.clickTo = "model/" + schema + "/new";
-                                            }
-                                        });
-                                    } else {
-                                        config.clickTo = "model/" + schema;
+                                    if (!config.hideMenu) {
+                                        if(config.isSingle) {
+                                            models.getSingleModel(schema, function(doc) {
+                                                if(doc) {
+                                                    config.clickTo = "model/" + schema + "/update/" + doc[config.id];
+                                                } else {
+                                                    config.clickTo = "model/" + schema + "/new";
+                                                }
+                                            });
+                                        } else {
+                                            config.clickTo = "model/" + schema;
+                                        }
                                     }
                                     $scope.sections.add(config.section, schema, config);
                                 });
