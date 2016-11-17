@@ -115,13 +115,15 @@
                 for (var i in extensions.pages) {
                     var page = extensions.pages[i];
 
+                    //Add the route for the custom page. modelName controls the sharding selector if given
                     if (page.backoffice) {
                         $routeProvider.when('/' + page.url, {
                             templateUrl: page.template,
                             controller: page.controller,
                             resolve: {
                                 app: authCheck
-                            }
+                            },
+                            modelName: page.modelName
                         });
                     }
 
