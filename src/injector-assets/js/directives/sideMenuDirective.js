@@ -39,8 +39,8 @@
                                         } else {
                                             config.clickTo = "model/" + schema;
                                         }
+                                        $scope.sections.add(config.section, schema, config);
                                     }
-                                    $scope.sections.add(config.section, schema, config);
                                 });
                             });
                         });

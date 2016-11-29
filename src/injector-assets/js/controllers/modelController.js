@@ -55,6 +55,10 @@
                 search.setLimit($scope.itemsPerPage);
                 search.setSkip(0);
 
+                if(model.config.defaultSearch) {
+                    search.setSortBy(model.config.defaultSearch);
+                }
+
                 //Init elements
                 $scope.search();
 
@@ -102,8 +106,13 @@
                     return !(element[$scope.config.id] && element[$scope.config.id] !== "");
                 };
 
-                $scope.displayCustomField = function (field, element) {
+                $scope.displayCustomField = function (field, element, schema) {
                     var s = common.getField(field, element);
+                    if(schema[field].format === 'date') {
+                        if(s && s !=='') {
+                            s = new Date(Date.parse(s)).toLocaleString();
+                        }
+                    }
                     return (s === undefined || s === "") ? "<empty>" : s;
                 };
 

@@ -42,7 +42,7 @@
                                    ng-model="element.checked"/>
                         </td>
                         <td ng-repeat="column in config.allDisplayFields" ng-bind-html="displayCustomField(column,
-                            element)| to_trusted">
+                            element, schemaForm)| to_trusted">
                         </td>
                         <td>
                             <a ng-disabled="isDisabled(element)" class="btn btn-primary btn-sm"

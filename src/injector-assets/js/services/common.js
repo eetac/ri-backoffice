@@ -53,7 +53,7 @@
                         var parentArr;
                         for (var path in splitted) {
 
-                            //Method for extrat array[].a fields or array[0].a fields.
+                            //Method for extract array[].a fields or array[0].a fields.
                             if ((/(\[\d*\])/).test(splitted[path])) {
                                 //Is an array !!!
                                 var rootElem = splitted[path].replace(/(\[\d*\])/, "");
