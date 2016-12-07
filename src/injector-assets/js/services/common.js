@@ -92,7 +92,7 @@
             };
 
             /**
-             * Sets value {{value}} to model {{model}} in the point sepparated field {{field}}
+             * Sets value {{value}} to model {{model}} in the point separated field {{field}}
              * @param field
              * @param model
              * @param value
@@ -132,34 +132,6 @@
                     }
                 }
             };
-
-
-            /**
-             * Obatins point separated field {{field}} from schema {{schema}}
-             * @param field
-             * @param schema
-             * @returns {*}
-             */
-            /*factory.getFieldFromSchema = function (field, schema) {
-             if (schema[field]) {
-             return schema[field];
-             } else {
-             var elements = field.split('.');
-             var retElem;
-             for (var i in elements) {
-             if (retElem && retElem.properties) {
-             retElem = retElem.properties[elements[i]];
-             } else if (retElem && retElem.denormalize && retElem.denormalize.indexOf(elements[i]) > -1) {
-             //Todo: Call api and resolve the model field
-             var refSchema = models.getModel(retElem.ref);
-             retElem = getFieldFromSchema(elements[i], refSchema.schema);
-             } else {
-             retElem = schema[elements[i]];
-             }
-             }
-             return retElem;
-             }
-             };*/
 
             /**
              * Obtains all the keys of an schema (using {{separator}} as nested level indicator)

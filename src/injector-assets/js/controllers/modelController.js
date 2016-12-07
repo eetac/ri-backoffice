@@ -108,7 +108,8 @@
 
                 $scope.displayCustomField = function (field, element, schema) {
                     var s = common.getField(field, element);
-                    if(schema[field].format === 'date') {
+                    var sch = models.getFieldFromSchema(field, schema);
+                    if(sch && sch.format === 'date') {
                         if(s && s !=='') {
                             s = new Date(Date.parse(s)).toLocaleString();
                         }
