@@ -5,7 +5,7 @@
         $scope.update = function (user) {
             loginProvider.login(user, function (res) {
                 if (!res) {
-                    $scope.loginError = 'Incorrect username of password';
+                    $scope.loginError = 'incorrect login';
                 } else{
                     $location.path('/');
                 }

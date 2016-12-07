@@ -3,11 +3,11 @@
     "TITLE": "Bienvenido",
     "SUBTITLE": "Por favor, entra",
     "SIGNIN": "Entrar",
-    "REMEMBER": "Recodar cuenta",
+    "REMEMBER": "Recordar cuenta",
     "PHOLDER": {
       "USER": "Usuario",
       "PASS": "Contraseña"
     },
-    "ERROR": "Utilitza un usuario y contraseña"
+    "ERROR": "Usuario o password incorrecto"
   }
 }

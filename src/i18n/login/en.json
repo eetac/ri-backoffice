@@ -8,6 +8,6 @@
       "USER": "Username",
       "PASS": "Password"
     },
-    "ERROR": "Enter any username and password"
+    "ERROR": "Incorrect user or password"
   }
 }
