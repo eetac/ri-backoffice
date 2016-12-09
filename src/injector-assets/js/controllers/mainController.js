@@ -6,16 +6,15 @@
             return window.encodeURIComponent;
         })
 
-        .controller('MainController', function ($rootScope, $scope, $q, loginProvider, models) {
+        .controller('MainController', function ($rootScope, $scope, $q, loginProvider, models, common) {
             $scope.postLoginFuncs = [];
-            //console.log($rootScope.$digestTtl);
             $scope.postLoginFuncs.push(function(){
                 models.getModels(function (m) {
                     $scope.schemas = {};
                     angular.forEach(m, function (schema) {
                         models.getModelConfig(schema, function (config) {
                             $scope.schemas[schema] = config;
-                            
+
                             loginProvider.getUser(function(){}); //Force first login
                             if (config.isSingle) {
                                 models.getSingleModel(schema, function (doc) {
@@ -31,6 +30,10 @@
                 });
             });
 
+
+            $scope.pretty = function pretty(str) {
+                return common.prettifyTitle(str);
+            };
 
             $scope.schemaHREF = function (name, conf) {
                 return conf.redirectTo || "#/model/" + name;

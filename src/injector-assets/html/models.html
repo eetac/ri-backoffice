@@ -1,9 +1,5 @@
 <div>
-    <!-- <ol class="breadcrumb">
-        <li class="active">Home</li>
-    </ol> -->
     <div ng-include src="'html/inc/breadcrumb.html'"></div>
-    <!--<h1>MyCook Console backoffice</h1>-->
     <h1 class="page-title">{{'MODELS.TITLE'|translate}}
         <small>{{'MODELS.SUBTITLE'|translate}}</small>
     </h1>
@@ -18,7 +14,7 @@
             <tbody>
             <tr ng-repeat="(schemaName, schemaConf) in schemas">
                 <td>
-                    <a ng-href="{{schemaHREF(schemaName, schemaConf)}}">{{schemaName}}</a>
+                    <a ng-href="{{schemaHREF(schemaName, schemaConf)}}">{{pretty(schemaName)}}</a>
                 </td>
                 <td><a ng-if="!schemaConf.isSingle" class="btn btn-primary btn-sm" href="#/model/{{schemaName}}/new">{{'MODELS.TABLE.CREATE'|translate}}</a></td>
             </tr>
