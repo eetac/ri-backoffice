@@ -44,11 +44,8 @@
 
                         elemSearch.title = fieldFromSchema.title;
                         elemSearch.field = field;
-                        //elemSearch.placeholder = "Search in " + modelName + " by " + elemSearch.field;
                         elemSearch.placeholder = {modelName: modelName, field: elemSearch.field};
                         elemSearch.ref = (fieldFromSchema.ref && !fieldFromSchema.denormalize) ? fieldFromSchema.ref : undefined;
-
-                        //console.log(elemSearch);
 
                         index = scope.availableFields.indexOf(field);
                         if (index > -1) {
@@ -109,6 +106,191 @@
                     //    scope.addSearch(scope.availableFields[0]);
                     //};
 
+                    /*** MONGO DATE PARSING **/
+                    function parseMongoDate(txt) {
+                        var result = {};
+                        var dt = parseDateTimeRange(txt);
+
+                        if(dt.err) {
+                            return dt;
+                        }
+
+                        if(!dt.end) {
+                            //CASE 0 1/12/15 convert year
+                            updateYear(dt.start);
+                            var d = dt.start;
+
+                            if(d.day == undefined && d.month != undefined && d.year != undefined && d.hour == undefined) {
+                                //CASE 4 12/2015 -> gte 1/12/2015 0:00:00 .. lt 1/1/2016 0:00:00
+                                result["$gte"] = new Date(d.year,d.month-1,1,0,0,0,0);
+                                result["$lt"]  = new Date(d.year,d.month,1,0,0,0,0);
+                            } else if(d.day != undefined && d.month != undefined && d.year != undefined && d.hour == undefined) {
+                                //CASE 1 1/12/2015 -> 1/12/2015 0:00:00 .. lt 2/12/2015 0:00:00
+                                result["$gte"] = new Date(d.year,d.month-1,d.day,0,0,0,0);
+                                result["$lt"] =  new Date(d.year,d.month-1,d.day+1,0,0,0,0);
+                            } else if(d.day != undefined && d.month != undefined && d.year != undefined && d.hour != undefined) {
+                                //CASE 2 1/12/2015 HH:MM -> gte 1/12/2015 HH:MM:00 .. lte 1/12/2015 HH:MM:59
+                                //CASE 3 1/12/2015 HH:MM:SS
+                                var sec = 0;
+                                if(!isNaN(d.second)) {
+                                    sec = d.second;
+                                }
+                                result["$gte"] = new Date(d.year,d.month-1,d.day,d.hour,d.minute,sec,0);
+                                result["$lte"] = new Date(d.year,d.month-1,d.day,d.hour,d.minute,sec,999);
+                            } else {
+                                result = {err: "format invalid"};
+                            }
+                        } else {
+                            //CASE 0 1/12/15 convert year
+                            updateYear(dt.start);
+                            updateYear(dt.end);
+                            var d1 = dt.start;
+                            var d2 = dt.end;
+                            var sec1 = 0;
+                            var sec2 = 0;
+
+                            if(d1.second != undefined) {
+                                sec1 = d1.second;
+                            }
+
+                            if(d2.second != undefined) {
+                                sec2 = d2.second;
+                            }
+
+                            if(d1.hour == undefined && d2.hour == undefined && d1.year != undefined && d2.year != undefined) {
+                                // 1/2/90 - 2/2/90
+                                result["$gte"] = new Date(d1.year,d1.month-1,d1.day,0,0,0,0);
+                                result["$lte"] = new Date(d2.year,d2.month-1,d2.day,23,59,59,999);
+                            } else if(d1.hour != undefined && d2.hour != undefined && d1.year != undefined && d2.year != undefined) {
+                                // 1/2/90 H:M - 2/2/90 H:M
+                                result["$gte"] = new Date(d1.year,d1.month-1,d1.day,d1.hour,d1.minute,sec1,0);
+                                result["$lte"] = new Date(d2.year,d2.month-1,d2.day,d2.hour,d2.minute,sec2,999);
+                            } else if(d1.hour != undefined && d2.hour != undefined && d1.year != undefined && d2.year == undefined) {
+                                // 1/2/90 H:M - H:M
+                                result["$gte"] = new Date(d1.year,d1.month-1,d1.day,d1.hour,d1.minute,sec1,0);
+                                result["$lte"] = new Date(d1.year,d1.month-1,d1.day,d2.hour,d2.minute,sec2,999);
+                            } else if(d1.hour != undefined && d2.hour == undefined && d1.year != undefined && d2.year != undefined) {
+                                // 1/2/90 H:M - 2/2/90
+                                result["$gte"] = new Date(d1.year,d1.month-1,d1.day,d1.hour,d1.minute,sec1,0);
+                                result["$lte"] = new Date(d2.year,d2.month-1,d2.day,d1.hour,d1.minute,sec1,999);
+                            } else {
+                                result = {err: "format invalid"};
+                            }
+                        }
+                        debugParse(result);
+                        return result;
+                    }
+
+                    function updateYear(dt) {
+                        var year = Number(dt.year);
+                        if(year<100) {
+                            if(year<46) {
+                                year = 2000 + year;
+                            } else {
+                                year = 1900 + year;
+                            }
+                            dt.year = String(year);
+                        }
+                    }
+
+                    function parseDateTimeRange(txt) {
+                        var pieces = txt.split("-");
+                        switch(pieces.length) {
+                            case 1:
+                                var d1 = parseDateTime(pieces[0].trim());
+                                if(d1) {
+                                    return {start: d1};
+                                } else {
+                                    return {err:"format invalid"};
+                                }
+                            case 2:
+                                var d1 = parseDateTime(pieces[0].trim());
+                                var d2 = parseDateTime(pieces[1].trim());
+                                if(d1 && d2) {
+                                    return {start: d1, end: d2};
+                                } else {
+                                    return {err:"format invalid"};
+                                }
+                            default:
+                                return {err:"format invalid"};
+                        }
+                    }
+
+                    function parseDateTime(dt) {
+                        var pieces = dt.split(" ");
+                        switch(pieces.length) {
+                            case 1:
+                                return parseDateOrTime(pieces[0].trim());
+                            case 2:
+                                var dt1 = parseDateOrTime(pieces[0].trim());
+                                var dt2 = parseDateOrTime(pieces[1].trim());
+                                if(!dt1 || !dt2) {
+                                    return null;
+                                } else {
+                                    dt1.hour = dt2.hour;
+                                    dt1.minute = dt2.minute;
+                                    dt1.second = dt2.second;
+                                    return dt1;
+                                }
+                            default:
+                                return null;
+                        }
+                    }
+
+                    function parseDateOrTime(dt) {
+                        if(dt.indexOf(':')!=-1) {
+                            return parseTime(dt);
+                        } else if(dt.indexOf('/')!=-1) {
+                            return parseDate(dt);
+                        } else {
+                            return null;
+                        }
+                    }
+
+                    function Num(txt) {
+                        if(txt==undefined) return undefined;
+                        return Number(txt);
+                    }
+
+                    function parseTime(t) {
+                        var regex = /^(\d?\d):(\d\d)(:(\d\d))?$/g
+                        var result = regex.exec(t);
+                        if(result) {
+                            return {hour: Num(result[1]) , minute: Num(result[2]), second: Num(result[4])};
+                        } else {
+                            return null;
+                        }
+                    }
+
+                    function parseDate(d) {
+                        var regex = /^((\d?\d)\/)?(\d?\d)\/(\d{2,4})$/g
+                        var result = regex.exec(d);
+                        if(result) {
+                            var o = {day: Num(result[2]) , month: Num(result[3]), year: Num(result[4])};
+                            return o;
+                        } else {
+                            return null;
+                        }
+                    }
+
+                    function debugParse(x) {
+                        if(x["$gte"]) {
+                            console.log("GTE", x["$gte"].toLocaleString("es-ES"));
+                        }
+                        if(x["$gt"]) {
+                            console.log("GT ", x["$gt"].toLocaleString("es-ES"));
+                        }
+                        if(x["$lte"]) {
+                            console.log("LTE", x["$lte"].toLocaleString("es-ES"));
+                        }
+                        if(x["$lt"]) {
+                            console.log("LT ", x["$lt"].toLocaleString("es-ES"));
+                        }
+                        console.log("----------------------------------------");
+                    }
+
+                    /** END MONGO DATE PARSING ***/
+
                     scope.search = function () {
                         var query = {};
 
@@ -123,8 +305,14 @@
                                                 singleQuery[s.field] = {$regex: s.value, $options: 'i'};
                                             }
                                         } else if (sfield.type == "string" && sfield.format == "date") {
+                                            var q = parseMongoDate(s.value);
+
                                             if (s.value !== "") {
-                                                singleQuery[s.field] = s.value;
+                                                if(q.err == undefined) {
+                                                    singleQuery[s.field] = q;
+                                                } else {
+                                                    alert("Format invalid in field "+s.field);
+                                                }
                                             }
                                         } else if (sfield.ref && !sfield.denormalize) {
                                             singleQuery[s.field] = s.value;
