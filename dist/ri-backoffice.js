@@ -317,13 +317,15 @@
                 for (var i in extensions.pages) {
                     var page = extensions.pages[i];
 
+                    //Add the route for the custom page. modelName controls the sharding selector if given
                     if (page.backoffice) {
                         $routeProvider.when('/' + page.url, {
                             templateUrl: page.template,
                             controller: page.controller,
                             resolve: {
                                 app: authCheck
-                            }
+                            },
+                            modelName: page.modelName
                         });
                     }
 
@@ -899,7 +901,7 @@
                     };
 
                     /**
-                     * Obatins point separated field {{field}} from schema {{schema}}
+                     * Obtains point separated field {{field}} from schema {{schema}}
                      * @param field
                      * @param schema
                      * @returns {*}
@@ -1389,7 +1391,7 @@
                         var parentArr;
                         for (var path in splitted) {
 
-                            //Method for extrat array[].a fields or array[0].a fields.
+                            //Method for extract array[].a fields or array[0].a fields.
                             if ((/(\[\d*\])/).test(splitted[path])) {
                                 //Is an array !!!
                                 var rootElem = splitted[path].replace(/(\[\d*\])/, "");
@@ -1428,7 +1430,7 @@
             };
 
             /**
-             * Sets value {{value}} to model {{model}} in the point sepparated field {{field}}
+             * Sets value {{value}} to model {{model}} in the point separated field {{field}}
              * @param field
              * @param model
              * @param value
@@ -1468,34 +1470,6 @@
                     }
                 }
             };
-
-
-            /**
-             * Obatins point separated field {{field}} from schema {{schema}}
-             * @param field
-             * @param schema
-             * @returns {*}
-             */
-            /*factory.getFieldFromSchema = function (field, schema) {
-             if (schema[field]) {
-             return schema[field];
-             } else {
-             var elements = field.split('.');
-             var retElem;
-             for (var i in elements) {
-             if (retElem && retElem.properties) {
-             retElem = retElem.properties[elements[i]];
-             } else if (retElem && retElem.denormalize && retElem.denormalize.indexOf(elements[i]) > -1) {
-             //Todo: Call api and resolve the model field
-             var refSchema = models.getModel(retElem.ref);
-             retElem = getFieldFromSchema(elements[i], refSchema.schema);
-             } else {
-             retElem = schema[elements[i]];
-             }
-             }
-             return retElem;
-             }
-             };*/
 
             /**
              * Obtains all the keys of an schema (using {{separator}} as nested level indicator)
@@ -1661,18 +1635,20 @@
                         models.getModels(function (m) {
                             angular.forEach(m, function (schema) {
                                 models.getModelConfig(schema, function (config) {
-                                    if (config.isSingle) {
-                                        models.getSingleModel(schema, function (doc) {
-                                            if (doc) {
-                                                config.clickTo = "model/" + schema + "/update/" + doc[config.id];
-                                            } else {
-                                                config.clickTo = "model/" + schema + "/new";
-                                            }
-                                        });
-                                    } else {
-                                        config.clickTo = "model/" + schema;
+                                    if (!config.hideMenu) {
+                                        if(config.isSingle) {
+                                            models.getSingleModel(schema, function(doc) {
+                                                if(doc) {
+                                                    config.clickTo = "model/" + schema + "/update/" + doc[config.id];
+                                                } else {
+                                                    config.clickTo = "model/" + schema + "/new";
+                                                }
+                                            });
+                                        } else {
+                                            config.clickTo = "model/" + schema;
+                                        }
+                                        $scope.sections.add(config.section, schema, config);
                                     }
-                                    $scope.sections.add(config.section, schema, config);
                                 });
                             });
                         });
@@ -2042,11 +2018,8 @@ var Sections = function () {
 
                         elemSearch.title = fieldFromSchema.title;
                         elemSearch.field = field;
-                        //elemSearch.placeholder = "Search in " + modelName + " by " + elemSearch.field;
                         elemSearch.placeholder = {modelName: modelName, field: elemSearch.field};
                         elemSearch.ref = (fieldFromSchema.ref && !fieldFromSchema.denormalize) ? fieldFromSchema.ref : undefined;
-
-                        //console.log(elemSearch);
 
                         index = scope.availableFields.indexOf(field);
                         if (index > -1) {
@@ -2107,6 +2080,191 @@ var Sections = function () {
                     //    scope.addSearch(scope.availableFields[0]);
                     //};
 
+                    /*** MONGO DATE PARSING **/
+                    function parseMongoDate(txt) {
+                        var result = {};
+                        var dt = parseDateTimeRange(txt);
+
+                        if(dt.err) {
+                            return dt;
+                        }
+
+                        if(!dt.end) {
+                            //CASE 0 1/12/15 convert year
+                            updateYear(dt.start);
+                            var d = dt.start;
+
+                            if(d.day == undefined && d.month != undefined && d.year != undefined && d.hour == undefined) {
+                                //CASE 4 12/2015 -> gte 1/12/2015 0:00:00 .. lt 1/1/2016 0:00:00
+                                result["$gte"] = new Date(d.year,d.month-1,1,0,0,0,0);
+                                result["$lt"]  = new Date(d.year,d.month,1,0,0,0,0);
+                            } else if(d.day != undefined && d.month != undefined && d.year != undefined && d.hour == undefined) {
+                                //CASE 1 1/12/2015 -> 1/12/2015 0:00:00 .. lt 2/12/2015 0:00:00
+                                result["$gte"] = new Date(d.year,d.month-1,d.day,0,0,0,0);
+                                result["$lt"] =  new Date(d.year,d.month-1,d.day+1,0,0,0,0);
+                            } else if(d.day != undefined && d.month != undefined && d.year != undefined && d.hour != undefined) {
+                                //CASE 2 1/12/2015 HH:MM -> gte 1/12/2015 HH:MM:00 .. lte 1/12/2015 HH:MM:59
+                                //CASE 3 1/12/2015 HH:MM:SS
+                                var sec = 0;
+                                if(!isNaN(d.second)) {
+                                    sec = d.second;
+                                }
+                                result["$gte"] = new Date(d.year,d.month-1,d.day,d.hour,d.minute,sec,0);
+                                result["$lte"] = new Date(d.year,d.month-1,d.day,d.hour,d.minute,sec,999);
+                            } else {
+                                result = {err: "format invalid"};
+                            }
+                        } else {
+                            //CASE 0 1/12/15 convert year
+                            updateYear(dt.start);
+                            updateYear(dt.end);
+                            var d1 = dt.start;
+                            var d2 = dt.end;
+                            var sec1 = 0;
+                            var sec2 = 0;
+
+                            if(d1.second != undefined) {
+                                sec1 = d1.second;
+                            }
+
+                            if(d2.second != undefined) {
+                                sec2 = d2.second;
+                            }
+
+                            if(d1.hour == undefined && d2.hour == undefined && d1.year != undefined && d2.year != undefined) {
+                                // 1/2/90 - 2/2/90
+                                result["$gte"] = new Date(d1.year,d1.month-1,d1.day,0,0,0,0);
+                                result["$lte"] = new Date(d2.year,d2.month-1,d2.day,23,59,59,999);
+                            } else if(d1.hour != undefined && d2.hour != undefined && d1.year != undefined && d2.year != undefined) {
+                                // 1/2/90 H:M - 2/2/90 H:M
+                                result["$gte"] = new Date(d1.year,d1.month-1,d1.day,d1.hour,d1.minute,sec1,0);
+                                result["$lte"] = new Date(d2.year,d2.month-1,d2.day,d2.hour,d2.minute,sec2,999);
+                            } else if(d1.hour != undefined && d2.hour != undefined && d1.year != undefined && d2.year == undefined) {
+                                // 1/2/90 H:M - H:M
+                                result["$gte"] = new Date(d1.year,d1.month-1,d1.day,d1.hour,d1.minute,sec1,0);
+                                result["$lte"] = new Date(d1.year,d1.month-1,d1.day,d2.hour,d2.minute,sec2,999);
+                            } else if(d1.hour != undefined && d2.hour == undefined && d1.year != undefined && d2.year != undefined) {
+                                // 1/2/90 H:M - 2/2/90
+                                result["$gte"] = new Date(d1.year,d1.month-1,d1.day,d1.hour,d1.minute,sec1,0);
+                                result["$lte"] = new Date(d2.year,d2.month-1,d2.day,d1.hour,d1.minute,sec1,999);
+                            } else {
+                                result = {err: "format invalid"};
+                            }
+                        }
+                        debugParse(result);
+                        return result;
+                    }
+
+                    function updateYear(dt) {
+                        var year = Number(dt.year);
+                        if(year<100) {
+                            if(year<46) {
+                                year = 2000 + year;
+                            } else {
+                                year = 1900 + year;
+                            }
+                            dt.year = String(year);
+                        }
+                    }
+
+                    function parseDateTimeRange(txt) {
+                        var pieces = txt.split("-");
+                        switch(pieces.length) {
+                            case 1:
+                                var d1 = parseDateTime(pieces[0].trim());
+                                if(d1) {
+                                    return {start: d1};
+                                } else {
+                                    return {err:"format invalid"};
+                                }
+                            case 2:
+                                var d1 = parseDateTime(pieces[0].trim());
+                                var d2 = parseDateTime(pieces[1].trim());
+                                if(d1 && d2) {
+                                    return {start: d1, end: d2};
+                                } else {
+                                    return {err:"format invalid"};
+                                }
+                            default:
+                                return {err:"format invalid"};
+                        }
+                    }
+
+                    function parseDateTime(dt) {
+                        var pieces = dt.split(" ");
+                        switch(pieces.length) {
+                            case 1:
+                                return parseDateOrTime(pieces[0].trim());
+                            case 2:
+                                var dt1 = parseDateOrTime(pieces[0].trim());
+                                var dt2 = parseDateOrTime(pieces[1].trim());
+                                if(!dt1 || !dt2) {
+                                    return null;
+                                } else {
+                                    dt1.hour = dt2.hour;
+                                    dt1.minute = dt2.minute;
+                                    dt1.second = dt2.second;
+                                    return dt1;
+                                }
+                            default:
+                                return null;
+                        }
+                    }
+
+                    function parseDateOrTime(dt) {
+                        if(dt.indexOf(':')!=-1) {
+                            return parseTime(dt);
+                        } else if(dt.indexOf('/')!=-1) {
+                            return parseDate(dt);
+                        } else {
+                            return null;
+                        }
+                    }
+
+                    function Num(txt) {
+                        if(txt==undefined) return undefined;
+                        return Number(txt);
+                    }
+
+                    function parseTime(t) {
+                        var regex = /^(\d?\d):(\d\d)(:(\d\d))?$/g
+                        var result = regex.exec(t);
+                        if(result) {
+                            return {hour: Num(result[1]) , minute: Num(result[2]), second: Num(result[4])};
+                        } else {
+                            return null;
+                        }
+                    }
+
+                    function parseDate(d) {
+                        var regex = /^((\d?\d)\/)?(\d?\d)\/(\d{2,4})$/g
+                        var result = regex.exec(d);
+                        if(result) {
+                            var o = {day: Num(result[2]) , month: Num(result[3]), year: Num(result[4])};
+                            return o;
+                        } else {
+                            return null;
+                        }
+                    }
+
+                    function debugParse(x) {
+                        if(x["$gte"]) {
+                            console.log("GTE", x["$gte"].toLocaleString("es-ES"));
+                        }
+                        if(x["$gt"]) {
+                            console.log("GT ", x["$gt"].toLocaleString("es-ES"));
+                        }
+                        if(x["$lte"]) {
+                            console.log("LTE", x["$lte"].toLocaleString("es-ES"));
+                        }
+                        if(x["$lt"]) {
+                            console.log("LT ", x["$lt"].toLocaleString("es-ES"));
+                        }
+                        console.log("----------------------------------------");
+                    }
+
+                    /** END MONGO DATE PARSING ***/
+
                     scope.search = function () {
                         var query = {};
 
@@ -2121,8 +2279,14 @@ var Sections = function () {
                                                 singleQuery[s.field] = {$regex: s.value, $options: 'i'};
                                             }
                                         } else if (sfield.type == "string" && sfield.format == "date") {
+                                            var q = parseMongoDate(s.value);
+
                                             if (s.value !== "") {
-                                                singleQuery[s.field] = s.value;
+                                                if(q.err == undefined) {
+                                                    singleQuery[s.field] = q;
+                                                } else {
+                                                    alert("Format invalid in field "+s.field);
+                                                }
                                             }
                                         } else if (sfield.ref && !sfield.denormalize) {
                                             singleQuery[s.field] = s.value;
@@ -2618,7 +2782,7 @@ var Sections = function () {
         $scope.update = function (user) {
             loginProvider.login(user, function (res) {
                 if (!res) {
-                    $scope.loginError = 'Incorrect username of password';
+                    $scope.loginError = 'incorrect login';
                 } else{
                     $location.path('/');
                 }
@@ -2626,6 +2790,7 @@ var Sections = function () {
         };
     }]);
 }());
+
 (function () {
     'use strict';
     angular.module('injectorApp')
@@ -2634,16 +2799,15 @@ var Sections = function () {
             return window.encodeURIComponent;
         })
 
-        .controller('MainController', ['$rootScope', '$scope', '$q', 'loginProvider', 'models', function ($rootScope, $scope, $q, loginProvider, models) {
+        .controller('MainController', ['$rootScope', '$scope', '$q', 'loginProvider', 'models', 'common', function ($rootScope, $scope, $q, loginProvider, models, common) {
             $scope.postLoginFuncs = [];
-            //console.log($rootScope.$digestTtl);
             $scope.postLoginFuncs.push(function(){
                 models.getModels(function (m) {
                     $scope.schemas = {};
                     angular.forEach(m, function (schema) {
                         models.getModelConfig(schema, function (config) {
                             $scope.schemas[schema] = config;
-                            
+
                             loginProvider.getUser(function(){}); //Force first login
                             if (config.isSingle) {
                                 models.getSingleModel(schema, function (doc) {
@@ -2659,6 +2823,10 @@ var Sections = function () {
                 });
             });
 
+
+            $scope.pretty = function pretty(str) {
+                return common.prettifyTitle(str);
+            };
 
             $scope.schemaHREF = function (name, conf) {
                 return conf.redirectTo || "#/model/" + name;
@@ -2739,6 +2907,10 @@ var Sections = function () {
                 search.setLimit($scope.itemsPerPage);
                 search.setSkip(0);
 
+                if(model.config.defaultSearch) {
+                    search.setSortBy(model.config.defaultSearch);
+                }
+
                 //Init elements
                 $scope.search();
 
@@ -2786,8 +2958,14 @@ var Sections = function () {
                     return !(element[$scope.config.id] && element[$scope.config.id] !== "");
                 };
 
-                $scope.displayCustomField = function (field, element) {
+                $scope.displayCustomField = function (field, element, schema) {
                     var s = common.getField(field, element);
+                    var sch = models.getFieldFromSchema(field, schema);
+                    if(sch && sch.format === 'date') {
+                        if(s && s !=='') {
+                            s = new Date(Date.parse(s)).toLocaleString();
+                        }
+                    }
                     return (s === undefined || s === "") ? "<empty>" : s;
                 };
 
@@ -2876,68 +3054,67 @@ var Sections = function () {
             };
         }]);
 }());
-(function () {
+(function() {
     'use strict';
     angular.module('injectorApp')
 
-    .controller('ShardingController', ['$scope', '$routeParams', '$rootScope', 'models', 'configs', function ($scope, $routeParams, $rootScope, models, configs) {
-        var modelName;
-        $scope.$on('$routeChangeSuccess', function (event, current) {
-            modelName = current.params.schema;
+        .controller('ShardingController', ['$scope', '$routeParams', '$rootScope', 'models', 'configs', function($scope, $routeParams, $rootScope, models, configs) {
+            var modelName;
+            $scope.$on('$routeChangeSuccess', function(event, current) {
+                modelName = current.params.schema;
 
-            /* JUAN: Continue here to implement sharding selector for custom pages
-             if(modelName == undefined) {
-                //ÑAPA para probar
-                modelName = "Ingredient";
-            }
-            */
+                // Gets configuration from custom page "modelName" parameter
+                if(modelName == undefined) {
+                    modelName = current.$$route.modelName;
+                }
 
-            if (modelName) {
-                models.getModel(modelName, function (m) {
-                    if (m.config.shard) {
-                        $scope.shardKey = m.config.shard.shardKey;
-                        $scope.shardKeyText = 'Select ' + $scope.shardKey + ' shard';
-                        $scope.shardValues = m.config.shard.shardValues;
+                if(modelName) {
+                    models.getModel(modelName, function(m) {
+                        if(m.config.shard) {
+                            $scope.shardKey = m.config.shard.shardKey;
+                            $scope.shardKeyText = 'Select ' + $scope.shardKey + ' shard';
+                            $scope.shardValues = m.config.shard.shardValues;
 
-                        if (models.getShard(modelName)) {
-                            $scope.shardKeyText = 'Using ' + models.getShard(modelName).key + ' ' + models.getShard(modelName).value;
-                        } else {
-                            if(m.config.shard.filtered){
-                                $scope.locked = true;
-                                $scope.setShard($scope.shardValues[0]);
+                            if(models.getShard(modelName)) {
+                                $scope.shardKeyText = 'Using ' + models.getShard(modelName).key + ' ' + models.getShard(
+                                        modelName).value;
                             } else {
-                                $scope.locked = false;
+                                if(m.config.shard.filtered) {
+                                    $scope.locked = true;
+                                    $scope.setShard($scope.shardValues[0]);
+                                } else {
+                                    $scope.locked = false;
+                                }
                             }
+
+                        } else {
+                            $scope.shardKey = undefined;
+                            $scope.shardKeyText = undefined;
+                            $scope.shardValues = undefined;
                         }
+                    });
+                } else {
+                    $scope.shardKey = undefined;
+                    $scope.shardKeyText = undefined;
+                    $scope.shardValues = undefined;
+                }
+            });
 
-                    } else {
-                        $scope.shardKey = undefined;
-                        $scope.shardKeyText = undefined;
-                        $scope.shardValues = undefined;
-                    }
-                });
-            } else {
-                $scope.shardKey = undefined;
-                $scope.shardKeyText = undefined;
-                $scope.shardValues = undefined;
-            }
-        });
+            $scope.setShard = function(value) {
+                $scope.shardKeyText = 'Using ' + $scope.shardKey + ' ' + value;
+                models.setShard($scope.shardKey, value, modelName);
 
-        $scope.setShard = function (value) {
-            $scope.shardKeyText = 'Using ' + $scope.shardKey + ' ' + value;
-            models.setShard($scope.shardKey, value, modelName);
+                $rootScope.$broadcast('shardChangeEvent');
+            };
 
-            $rootScope.$broadcast('shardChangeEvent');
-        };
-
-        $scope.removeShard = function () {
-            $scope.shardKeyText = 'Select ' + $scope.shardKey + ' shard';
-            //models.setShard($scope.shardKey, '', modelName);
-            models.removeShard(modelName);
-            $rootScope.$broadcast('shardChangeEvent');
-        };
-        $scope.shardKey = undefined;
-    }]);
+            $scope.removeShard = function() {
+                $scope.shardKeyText = 'Select ' + $scope.shardKey + ' shard';
+                //models.setShard($scope.shardKey, '', modelName);
+                models.removeShard(modelName);
+                $rootScope.$broadcast('shardChangeEvent');
+            };
+            $scope.shardKey = undefined;
+        }]);
 }());
 
 (function () {
