@@ -11,7 +11,7 @@ angular.module('schemaForm').directive('riTinymce', ['$http', '$window', '$modal
         autoresize_min_height: 400,
         autoresize_max_height: 800,
         fullscreen_new_window: true,
-        skin_url: 'dist/extra/tinymce/skins/lightgray',
+        skin_url: 'extra/tinymce/skins/lightgray',
         fullscreen_settings: {
             theme_advanced_path_location: "top"
         },
@@ -79,7 +79,7 @@ angular.module('schemaForm').directive('riTinymce', ['$http', '$window', '$modal
                 config = angular.extend(config || {}, defaultConf, {
                     selector: '#' + attrs.id,
                     setup: function (ed) {
-                        tinyMCE.PluginManager.load('tinyvision', '/admin/dist/extra/tinyvision/build/plugin.min.js');
+                        tinyMCE.PluginManager.load('tinyvision', '/admin/extra/tinyvision/build/plugin.min.js');
                         tinymce = ed;
                         $window['focus' + attrs.id] = function () {
                             tinymce.execCommand('mceFocus', false, attrs.id);
