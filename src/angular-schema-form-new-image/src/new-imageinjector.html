@@ -24,7 +24,7 @@
                 </span>
                 <a href=" #" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><span
                         class="glyphicon glyphicon-remove"></span></a> <!-- discard -->
-                <a ng-if="imageExists" download="$$value$$" ng-href="{{image}}" target="_self"
+                <a ng-if="imageExists" download="{{$$value$$.image}}" ng-href="{{image}}" target="_self"
                    class="btn btn-default"><span class="glyphicon glyphicon-cloud-download"></span></a>
                 <!-- download -->
                 <a ng-if="imageExists" ng-click="deleteImage(arrayIndex)" class="btn btn-default"><span

@@ -22,7 +22,7 @@
                            ngf-select="true" ng-model="myFiles" ngf-change="imageExists=false; onFileSelect($files)">
                 </span>
                 <a href=" #" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><span class="glyphicon glyphicon-remove"></span></a> <!-- discard -->
-                <a ng-if="imageExists" download="$$value$$" ng-href="{{image}}" target="_self" class="btn btn-default"><span class="glyphicon glyphicon-cloud-download"></span></a> <!-- download -->
+                <a ng-if="imageExists" download="{{$$value$$}}" ng-href="{{image}}" target="_self" class="btn btn-default"><span class="glyphicon glyphicon-cloud-download"></span></a> <!-- download -->
                 <a ng-if="imageExists" ng-click="deleteFile(arrayIndex)" class="btn btn-default"><span class="glyphicon glyphicon-trash"></span></a> <!-- delete from server -->
             </div>
         </div>
