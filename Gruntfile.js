@@ -2,6 +2,9 @@ module.exports = function (grunt) {
     require('time-grunt')(grunt);
     require('load-grunt-tasks')(grunt);
 
+    grunt.config('env', grunt.option('env') || process.env.GRUNT_ENV || 'production');
+    grunt.config('compress', grunt.config('env') === 'production');
+
     var buildProperties = {
         appName: 'ri-backoffice',
         srcPath: 'src/',
@@ -209,8 +212,10 @@ module.exports = function (grunt) {
         uglify: {
             options: {
                 banner: '/*! <%= config.appName %> <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
-                mangle: true,
-                preserveComments: false
+                mangle: grunt.config('compress'),
+                preserveComments: !grunt.config('compress'),
+                beautify: !grunt.config('compress'),
+                compress: (grunt.config('compress')?{}:false)
                 // Unmcomment following lines if you need to debug.
                 //mangle: false,
                 //preserveComments: true,
