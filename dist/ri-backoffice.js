@@ -3142,10 +3142,3 @@ var Sections = function () {
             }
         }]);
 }());
-(function () {
-    'use strict';
-
-    angular.module('injectorApp')
-        .controller('GalleryController', function () {
-        });
-}());
