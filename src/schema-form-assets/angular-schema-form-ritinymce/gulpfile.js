@@ -44,7 +44,7 @@ gulp.task('non-minified-dist', function() {
   stream.queue(gulp.src('./src/*.js'));
 
   stream.done()
-        .pipe(concat('bootstrap-ritinymce.js'))
+        .pipe(concat('dist/bootstrap-ritinymce.js'))
         .pipe(gulp.dest('.'));
 
 });

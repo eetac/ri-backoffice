@@ -104,9 +104,17 @@
                             return defer.promise;
                         }
                     }
-                }).when('/settings', {
+                })
+                .when('/settings', {
                     templateUrl: 'html/settings.html',
                     controller: 'SettingsController'
+                })
+                .when('/gallery', {
+                    templateUrl: 'html/gallery.html',
+                    controller: 'GalleryController',
+                    resolve: {
+                        app: authCheck
+                    }
                 });
 
 

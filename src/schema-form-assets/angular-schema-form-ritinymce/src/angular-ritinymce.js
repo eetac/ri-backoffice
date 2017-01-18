@@ -125,8 +125,8 @@ angular.module('schemaForm').directive('riTinymce', ['$http', '$window', '$modal
         }
     }
 }])
-    // Please note that $modalInstance represents a modal window (instance) dependency.
-    // It is not the same as the $modal service used above.
+// Please note that $modalInstance represents a modal window (instance) dependency.
+// It is not the same as the $modal service used above.
     .controller('ModalImgUploaderCtrl', function ($scope, $modalInstance, $timeout) {
         $scope.success = false;
         $scope.error = false;

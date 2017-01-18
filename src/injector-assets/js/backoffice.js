@@ -1,9 +1,8 @@
 (function () {
     'use strict';
     var app = angular.module('injectorApp', ['ngRoute', 'ngBiscuit', 'schemaForm', 'datePicker', 'ui.select',
-            'ui.ace', 'ui.codemirror', 'ui.bootstrap', 'ngFileUpload', 'routeInjector-tinymce',
-            'ngDroplet', 'punchCard', 'nvd3ChartDirectives', 'flash', 'ngDialog', 'angular-loading-bar',
-            'pascalprecht.translate', 'ngCookies'],
+            'ui.ace', 'ui.codemirror', 'ui.bootstrap', 'ngFileUpload', 'ngDroplet', 'punchCard', 'nvd3ChartDirectives', 'flash', 'ngDialog', 'angular-loading-bar',
+            'pascalprecht.translate', 'ngCookies', 'ui.tinymce'],
         function ($rootScopeProvider) {
             $rootScopeProvider.digestTtl(15);
         })
@@ -84,18 +83,18 @@
     }
 
     function getScripts(scripts, callback) {
-        if(!scripts ||  !scripts.length){
+        if (!scripts || !scripts.length) {
             return callback();
         }
         var progress = 0;
         var internalCallback = function () {
             if (++progress == scripts.length) {
-                $.ajaxSetup({async:true});
+                $.ajaxSetup({async: true});
                 callback();
             }
         };
 
-        $.ajaxSetup({async:false});
+        $.ajaxSetup({async: false});
         scripts.forEach(function (script) {
             $.getScript(script, internalCallback);
         });
