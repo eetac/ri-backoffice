@@ -45,9 +45,6 @@
     "build_git_hook": "./command.sh build"
   },
   "config": {
-//    "ghooks": {
-//      "pre-commit": "npm run build_git_hook"
-//    }
   },
   "repository": {
     "type": "git",
