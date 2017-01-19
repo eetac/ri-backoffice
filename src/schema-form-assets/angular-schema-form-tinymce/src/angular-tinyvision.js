@@ -165,9 +165,15 @@ angular.module('schemaForm')
             templateUrl: "directives/decorators/bootstrap/tinymce/tinyvision.html",
             scope: true,
             link: function (scope, element, attrs, ngModel) {
-                console.log("linked");
+                var pathStack = [];
                 scope.findByPath = function (path) {
-                    models.galleryGetByPath("/" + path, function (data) {
+                    if (path === "..") {
+                        pathStack.pop();
+                    } else {
+                        pathStack.push(path);
+                    }
+                    models.galleryGetByPath(pathStack.join("/"), function (data) {
+                        scope.pathStack = pathStack.join("/");
                         scope.data = data;
                     });
                 };

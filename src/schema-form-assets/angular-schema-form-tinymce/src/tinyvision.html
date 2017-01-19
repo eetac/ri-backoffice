@@ -238,18 +238,34 @@
     </div>
     <div class="tv-notice" id="notice"></div>
     <ol class="tv-items cf" id="items">
+        <li ng-if="pathStack" class="tv-item">
+            <a ng-click="findByPath('..')" class="tv-item-link" title="{{name}}">
+                <div class="tv-item-image">
+                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                </div>
+                <div class="tv-item-name">..</div>
+            </a>
+        </li>
         <li ng-repeat="e in data.directories track by $index" class="tv-item">
             <a ng-click="findByPath(e)" class="tv-item-link" title="{{name}}">
                 <div class="tv-item-image">
                     <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
                 </div>
-                <div class="tv-item-name">/{{e}}</div>
+                <div class="tv-item-name">{{e}}</div>
             </a>
         </li>
         <li ng-repeat="e in data.image track by $index" class="tv-item">
             <a href="#" class="tv-item-link" title="{{e}}">
                 <div class="tv-item-image">
-                    <img ng-src="{{e}}">
+                    <img ng-src="/gallery/{{pathStack}}/{{e}}">
+                </div>
+                <div class="tv-item-name">{{e}}</div>
+            </a>
+        </li>
+        <li ng-repeat="e in data.video track by $index" class="tv-item">
+            <a href="#" class="tv-item-link" title="{{e}}">
+                <div class="tv-item-image">
+                    <img ng-src="/gallery/{{pathStack}}/{{e}}">
                 </div>
                 <div class="tv-item-name">{{e}}</div>
             </a>
