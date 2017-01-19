@@ -71,8 +71,8 @@ angular.module('schemaForm')
              *
              * @return {Window} iframe's window object.
              */
-            self.iframeWindow = function () {
-                return self.win.getEl().getElementsByTagName('iframe')[0].contentWindow;
+            self.scope = function () {
+                return angular.element(self.win.getEl()).scope().$$childTail;
             };
 
             /**
@@ -81,7 +81,7 @@ angular.module('schemaForm')
              * @return {?Object} Item data.
              */
             self.selected = function () {
-                return self.iframeWindow().selected();
+                return self.scope().getCompleteSelected();
             };
 
             /**
@@ -94,7 +94,7 @@ angular.module('schemaForm')
             self.populateField = function (field) {
                 var selected = self.selected();
 
-                field.value = selected ? selected.value : '';
+                field.value = selected ? selected : '';
 
                 return self;
             };
@@ -177,6 +177,12 @@ angular.module('schemaForm')
                         scope.data = data;
                     });
                 };
+                scope.setSelected = function (e) {
+                    scope.selected = e;
+                };
+                scope.getCompleteSelected = function () {
+                    return "/gallery" + pathStack.join("/") + "/" + scope.selected;
+                }
                 scope.findByPath("");
             }
         }

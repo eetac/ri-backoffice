@@ -269,8 +269,8 @@
                 <div class="tv-item-name">{{e}}</div>
             </a>
         </li>
-        <li ng-repeat="e in data.image track by $index" class="tv-item">
-            <a href="#" class="tv-item-link" title="{{e}}">
+        <li ng-repeat="e in data.image track by $index" class="tv-item" ng-class="{'selected':selected==e}">
+            <a ng-click="setSelected(e)" class="tv-item-link" title="{{e}}">
                 <div class="tv-item-image">
                     <img ng-src="/gallery/{{pathStack}}/{{e}}">
                 </div>
