@@ -180,6 +180,21 @@
         color: #000;
     }
 
+    #tinyvision .tv-item-dir {
+        border: 1px solid #eee;
+        height: 100px;
+        line-height: 100px;
+        padding: 5px;
+        text-align: center;
+        width: 100px;
+    }
+
+    #tinyvision .tv-item-dir span {
+        font-size: 70px;
+        font-family: 'Glyphicons Halflings';
+        color: #696969;
+    }
+
     #tinyvision .tv-item-image {
         border: 1px solid #eee;
         height: 100px;
@@ -226,21 +241,21 @@
                 <button type="button" id="upload"><span class="tv-icon tv-icon-upload"></span> Upload</button>
             </div>
         </div>
-        <div class="tv-toolbar-right">
-            <!--<div class="tv-search mce-widget">-->
-            <!--<span class="tv-icon tv-icon-search"></span>-->
-            <!--<input class="mce-textbox" id="search" placeholder="Search">-->
-            <!--</div>-->
-            <div class="tv-refresh mce-widget mce-btn">
-                <button type="button" id="refresh"><span class="tv-icon tv-icon-refresh"></span></button>
-            </div>
-        </div>
+        <!--<div class="tv-toolbar-right">-->
+        <!--<div class="tv-search mce-widget">-->
+        <!--<span class="tv-icon tv-icon-search"></span>-->
+        <!--<input class="mce-textbox" id="search" placeholder="Search">-->
+        <!--</div>-->
+        <!--<div class="tv-refresh mce-widget mce-btn">-->
+        <!--<button type="button" id="refresh"><span class="tv-icon tv-icon-refresh"></span></button>-->
+        <!--</div>-->
+        <!--</div>-->
     </div>
     <div class="tv-notice" id="notice"></div>
     <ol class="tv-items cf" id="items">
         <li ng-if="pathStack" class="tv-item">
             <a ng-click="findByPath('..')" class="tv-item-link" title="{{name}}">
-                <div class="tv-item-image">
+                <div class="tv-item-dir">
                     <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
                 </div>
                 <div class="tv-item-name">..</div>
@@ -248,8 +263,8 @@
         </li>
         <li ng-repeat="e in data.directories track by $index" class="tv-item">
             <a ng-click="findByPath(e)" class="tv-item-link" title="{{name}}">
-                <div class="tv-item-image">
-                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                <div class="tv-item-dir">
+                    <span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>
                 </div>
                 <div class="tv-item-name">{{e}}</div>
             </a>
