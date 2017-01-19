@@ -907,6 +907,12 @@
                         });
                     };
 
+                    service.galleryGetByPath = function (path, cb) {
+                        $http.get(prefix + '/gallery' + path).success(function (data) {
+                            cb(data);
+                        });
+                    };
+
                     /**
                      * Obtains point separated field {{field}} from schema {{schema}}
                      * @param field

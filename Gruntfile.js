@@ -361,7 +361,7 @@ module.exports = function (grunt) {
             },
             tinymceskin: {
                 cwd: '<%= config.bowerFolder %>',
-                src: ['tinymce/skins/**/*', 'tinyvision/build/**/*'],          // copy all files and subfolders
+                src: ['tinymce/skins/**/*',],// 'tinyvision/build/**/*'],          // copy all files and subfolders
                 dest: '<%= config.distFolder %>extra',
                 expand: true
             },

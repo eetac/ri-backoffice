@@ -1,4 +1,5 @@
-angular.module("schemaForm").run(["$templateCache", function($templateCache) {$templateCache.put("directives/decorators/bootstrap/tinymce/tinymce.html","<div class=\"form-group {{form.htmlClass}}\" ng-class=\"{\'has-error\': hasError()}\">\r\n    <label class=\"control-label\" ng-show=\"showTitle()\">{{form.title}}</label>\r\n    <textarea\r\n            ri-tinymce=\"form.tinymceOptions\"\r\n            ui-tinymce\r\n            ng-model=\"$$value$$\"\r\n            schema-validate=\"form\">\r\n    </textarea>\r\n    <span class=\"help-block\">{{ (hasError() && errorMessage(schemaError())) || form.description}}</span>\r\n</div>");}]);
+angular.module("schemaForm").run(["$templateCache", function($templateCache) {$templateCache.put("directives/decorators/bootstrap/tinymce/tinymce.html","<div class=\"form-group {{form.htmlClass}}\" ng-class=\"{\'has-error\': hasError()}\">\r\n    <label class=\"control-label\" ng-show=\"showTitle()\">{{form.title}}</label>\r\n    <textarea\r\n            ri-tinymce=\"form.tinymceOptions\"\r\n            ui-tinymce\r\n            ng-model=\"$$value$$\"\r\n            schema-validate=\"form\">\r\n    </textarea>\r\n    <span class=\"help-block\">{{ (hasError() && errorMessage(schemaError())) || form.description}}</span>\r\n</div>");
+$templateCache.put("directives/decorators/bootstrap/tinymce/tinyvision.html","<!--<!DOCTYPE html>-->\r\n<!--<html lang=\"en\">-->\r\n<!--<head>-->\r\n<!--<meta charset=\"utf-8\">-->\r\n<!--<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge, chrome=1\">-->\r\n<!--<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">-->\r\n<!--<title>TinyVision</title>-->\r\n<style>\r\n    body {\r\n        margin: 0 !important;\r\n        padding: 51px 0 0 !important;\r\n    }\r\n\r\n    @-webkit-keyframes spin {\r\n        100% {\r\n            -webkit-transform: rotate(360deg);\r\n        }\r\n    }\r\n\r\n    @-moz-keyframes spin {\r\n        100% {\r\n            -moz-transform: rotate(360deg);\r\n        }\r\n    }\r\n\r\n    @-ms-keyframes spin {\r\n        100% {\r\n            -ms-transform: rotate(360deg);\r\n        }\r\n    }\r\n\r\n    @-o-keyframes spin {\r\n        100% {\r\n            -o-transform: rotate(360deg);\r\n        }\r\n    }\r\n\r\n    @keyframes spin {\r\n        100% {\r\n            transform: rotate(360deg);\r\n        }\r\n    }\r\n\r\n    @font-face {\r\n        font-family: \'TinyVision\';\r\n        font-style: normal;\r\n        font-weight: normal;\r\n        src: url(data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAAVEAA0AAAAAB2AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABGRlRNAAABMAAAABoAAAAcZoJdrEdERUYAAAFMAAAAHwAAACAANAAGT1MvMgAAAWwAAABIAAAAVi+63AZjbWFwAAABtAAAAEoAAAFY4yrQ3Wdhc3AAAAIAAAAACAAAAAj//wADZ2x5ZgAAAggAAAGOAAAB6KMbuPpoZWFkAAADmAAAADAAAAA2/jwvN2hoZWEAAAPIAAAAIAAAACQENQAMaG10eAAAA+gAAAAZAAAAHAhfAABsb2NhAAAEBAAAABAAAAAQALYBaG1heHAAAAQUAAAAHQAAACAASwBLbmFtZQAABDQAAADjAAABrcBFeh9wb3N0AAAFGAAAACoAAABQNaZ8cXicY2BgYGQAgpOd+YYg+lxNuS2MBgBAwQXwAAB4nGNgZGBg4ANiCQYQYGJgZGBmYAOSLGAeAwAEpgA7AHicY2BkfM44gYGVgYPRhzGNgYHBHUp/ZZBkaGFgYGJgZWaAAwEEkyEgzTWFweEBwwcGxgf/HzDoMT5gUGhgYGAEyQEA4m0MwnicY2BgYGaAYBkGRgYQCALyGMF8FgYzIM0BhEwgiQdMHxj+/wezGGAsAYhaNrBOFiDNysDACORBjALSIJ1MDKiAkWHYAwAG8Qi3AAAAAAAB//8AAnicLVDBbtNAEJ3ZXY+DjXBDN45Q1TjZxDZO1ZY6zlrQpglcEDFKJSS4IkX0UglO7Z1PQr30Uj6AfwApPfYnku4W7+w+6b15q6cZQIDNigGugAE0scdgbcga7DEKCLzBWxjAe4BYus+wr5LUJZVMsNDHmIcywA6Ocl2asrxsSdpDlRRTTPqKXFOWTvDUuMJ2qfMQf+Hzy7NsEcVO4Pvuz4ZPqSx20neSP2VuycmtxeGbxGqcXnPavloMzx5/XCN+/Brtxo51eV5A6baMu84uOXc1T/9TwWpfPctmhX/NLC70AAZFokiGeVtSXx2igQNWnLK8w1rSbYf4obqoqot/rWDLW46m2Vx3u3r+qdJRf+n9tq3qexD6y0GtRrrKpqOlZ3I2G8hYbHJewNjsrDjERAVILRke4yPkemIXZpN7KhkXurRgl2PBxHcQf/BvvGGeI2YktKAZp5u3++s/4+qlwi8n+/Om3ImGfvzqXhiXuUI455yInzuLg1k1jqdbDTH5fJQ19zph88kJPAD760w4AAB4nGNgZGBgAOLig5O74/ltvjJwMzGAwLmaclsY/f///wdMqowPgFwOBrA0AFmcDOx4nGNgZGBgfPD/AYMek8r///8YmFQZgCIogB0Aov8GQXicY2KAglUQinEbEN9mYGBSYWAAABtJAmYAAAAAAAAAAAAAAAAOAHQAqAD0eJxjYGRgYGBn8GBgYgABEMnIABJzAPMZAAosAJcAAAB4nIWOMW7CQBBFn8EQBVCqKLVTpcLadapwAMoUEXJPsbIsIVtaoOAIuUDuwSnoOUYOkDqfzUhJEYnVzsyb2b8zA8z4IONyMiY8GA+4wRsPeeLdOJfmZDxiyqfxmEk2kzLLb1W5T78uPOCOR+Mhr7wY59IcjUeaejYeq/7FipaOA7XiVtYrY9V2h7rdtr34jUDDng1rotLQ7DdrwTJJdylGKQIFFSVOcSH7r/HPi5dmbr6S9zyrXd/tln1sQlGVrlgUvyso8W6uWzkv4dWFa60S/4z0aSnqEFM3X7rrTb4B1lJDbQB4nGNgYsAP2IGYkYGJkYmRmZGFkZW9NC/TzcDAAES7ImgjKG0IAJXlCMMAAA==) format(\"woff\"), url(data:application/x-font-ttf;charset=utf-8;base64,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) format(\"truetype\");\r\n    }\r\n\r\n    #tinyvision .tv-icon {\r\n        display: inline-block;\r\n        font-family: \'TinyVision\';\r\n        font-style: normal;\r\n        font-size: 16px;\r\n        text-transform: none;\r\n        font-variant: normal;\r\n        font-weight: normal;\r\n        line-height: 1;\r\n        speak: none;\r\n        vertical-align: text-bottom;\r\n        -webkit-font-smoothing: antialiased;\r\n    }\r\n\r\n    #tinyvision .tv-icon-refresh:before {\r\n        content: \"\\e000\";\r\n    }\r\n\r\n    #tinyvision .tv-icon-upload:before {\r\n        content: \"\\e001\";\r\n    }\r\n\r\n    #tinyvision .tv-icon-search:before {\r\n        content: \"\\e002\";\r\n    }\r\n\r\n    #tinyvision .tv-toolbar {\r\n        border-bottom: 1px solid #9e9e9e;\r\n        left: 0;\r\n        padding: 10px;\r\n        position: fixed;\r\n        right: 0;\r\n        top: 0;\r\n        z-index: 1000;\r\n    }\r\n\r\n    #tinyvision .tv-toolbar-left {\r\n        float: left;\r\n    }\r\n\r\n    #tinyvision .tv-toolbar-left > * {\r\n        float: left;\r\n        margin-right: 3px;\r\n    }\r\n\r\n    #tinyvision .tv-toolbar-right {\r\n        float: right;\r\n    }\r\n\r\n    #tinyvision .tv-toolbar-right > * {\r\n        float: left;\r\n        margin-left: 3px;\r\n    }\r\n\r\n    #tinyvision .tv-upload .tv-icon-upload {\r\n        margin-right: 3px;\r\n    }\r\n\r\n    #tinyvision .tv-search {\r\n        position: relative;\r\n    }\r\n\r\n    #tinyvision .tv-search .tv-icon-search {\r\n        cursor: text;\r\n        left: 11px;\r\n        position: absolute;\r\n        top: 6px;\r\n    }\r\n\r\n    #tinyvision .tv-search input {\r\n        padding-left: 35px;\r\n        width: 200px;\r\n    }\r\n\r\n    #tinyvision .tv-search input.placeholder {\r\n        color: #aaa;\r\n    }\r\n\r\n    #tinyvision .tv-refresh-loading .tv-icon-refresh {\r\n        -webkit-animation: spin 2s linear infinite;\r\n        -moz-animation: spin 2s linear infinite;\r\n        -ms-animation: spin 2s linear infinite;\r\n        -o-animation: spin 2s linear infinite;\r\n        animation: spin 2s linear infinite;\r\n    }\r\n\r\n    #tinyvision .tv-notice {\r\n        border: 1px solid #eee;\r\n        color: #9e9e9e;\r\n        display: none;\r\n        font-size: 20px;\r\n        margin: 15% auto 0;\r\n        padding: 20px;\r\n        text-align: center;\r\n        white-space: normal;\r\n        width: 50%;\r\n    }\r\n\r\n    #tinyvision .tv-items {\r\n        list-style: none;\r\n        margin: 10px auto;\r\n        width: 660px;\r\n    }\r\n\r\n    #tinyvision .tv-item {\r\n        float: left;\r\n        margin: 10px;\r\n    }\r\n\r\n    #tinyvision .tv-item.selected .tv-item-image {\r\n        border: 2px solid #0088cc !important;\r\n        padding: 4px;\r\n    }\r\n\r\n    #tinyvision .tv-item.selected .tv-item-name {\r\n        color: #0088cc !important;\r\n    }\r\n\r\n    #tinyvision .tv-item-link {\r\n        cursor: pointer;\r\n        display: block;\r\n        text-decoration: none;\r\n    }\r\n\r\n    #tinyvision .tv-item-link:hover .tv-item-image {\r\n        border-color: #9e9e9e;\r\n    }\r\n\r\n    #tinyvision .tv-item-link:hover .tv-item-name {\r\n        color: #000;\r\n    }\r\n\r\n    #tinyvision .tv-item-image {\r\n        border: 1px solid #eee;\r\n        height: 100px;\r\n        line-height: 100px;\r\n        padding: 5px;\r\n        text-align: center;\r\n        width: 100px;\r\n    }\r\n\r\n    #tinyvision .tv-item-image img {\r\n        max-height: 100px;\r\n        max-width: 100px;\r\n        min-height: 1px;\r\n        min-width: 1px;\r\n        vertical-align: middle;\r\n    }\r\n\r\n    #tinyvision .tv-item-name {\r\n        color: #9e9e9e;\r\n        padding: 5px;\r\n        overflow: hidden;\r\n        text-overflow: ellipsis;\r\n        white-space: nowrap;\r\n        width: 100px;\r\n    }\r\n\r\n    .cf:before,\r\n    .cf:after {\r\n        content: \' \';\r\n        display: table;\r\n    }\r\n\r\n    .cf:after {\r\n        clear: both;\r\n    }\r\n</style>\r\n<!--<link rel=\"stylesheet\" href=\"tinyvision.css\">-->\r\n<!--</head>-->\r\n<!--<body>-->\r\n<div class=\"mce-container\" id=\"tinyvision\">\r\n    <div class=\"tv-toolbar mce-panel cf\">\r\n        <div class=\"tv-toolbar-left\">\r\n            <div class=\"tv-upload mce-widget mce-btn\">\r\n                <button type=\"button\" id=\"upload\"><span class=\"tv-icon tv-icon-upload\"></span> Upload</button>\r\n            </div>\r\n        </div>\r\n        <div class=\"tv-toolbar-right\">\r\n            <!--<div class=\"tv-search mce-widget\">-->\r\n            <!--<span class=\"tv-icon tv-icon-search\"></span>-->\r\n            <!--<input class=\"mce-textbox\" id=\"search\" placeholder=\"Search\">-->\r\n            <!--</div>-->\r\n            <div class=\"tv-refresh mce-widget mce-btn\">\r\n                <button type=\"button\" id=\"refresh\"><span class=\"tv-icon tv-icon-refresh\"></span></button>\r\n            </div>\r\n        </div>\r\n    </div>\r\n    <div class=\"tv-notice\" id=\"notice\"></div>\r\n    <ol class=\"tv-items cf\" id=\"items\">\r\n        <li ng-repeat=\"e in data.directories track by $index\" class=\"tv-item\">\r\n            <a ng-click=\"findByPath(e)\" class=\"tv-item-link\" title=\"{{name}}\">\r\n                <div class=\"tv-item-image\">\r\n                    <span class=\"glyphicon glyphicon-folder-open\" aria-hidden=\"true\"></span>\r\n                </div>\r\n                <div class=\"tv-item-name\">/{{e}}</div>\r\n            </a>\r\n        </li>\r\n        <li ng-repeat=\"e in data.image track by $index\" class=\"tv-item\">\r\n            <a href=\"#\" class=\"tv-item-link\" title=\"{{e}}\">\r\n                <div class=\"tv-item-image\">\r\n                    <img ng-src=\"{{e}}\">\r\n                </div>\r\n                <div class=\"tv-item-name\">{{e}}</div>\r\n            </a>\r\n        </li>\r\n    </ol>\r\n</div>\r\n<!--&lt;!&ndash;<script src=\"tinyvision.min.js\"></script>&ndash;&gt;-->\r\n<!--</body>-->\r\n<!--</html>-->");}]);
 angular.module('schemaForm').directive('riTinymce', ['$http', '$window', '$modal', function ($http, $window, $modal) {
 
     var defaultConf = {
@@ -61,7 +62,7 @@ angular.module('schemaForm').directive('riTinymce', ['$http', '$window', '$modal
                 config = angular.extend(config || {}, defaultConf, {
                     selector: '#' + attrs.id,
                     setup: function (editor) {
-                        tinyMCE.PluginManager.load('tinyvision', '/admin/extra/tinyvision/build/plugin.min.js');
+                        // tinyMCE.PluginManager.load('tinyvision', '/admin/extra/tinyvision/build/plugin.min.js');
                         $window['focus' + attrs.id] = function () {
                             tinymce.execCommand('mceFocus', false, attrs.id);
                         };
@@ -107,157 +108,184 @@ angular.module('schemaForm').directive('riTinymce', ['$http', '$window', '$modal
             }
         }
     };
-//     var count = 0;
-//
-//     var defaultConf = {
-//         plugins: "code image -tinyvision autoresize fullscreen media link paste preview textcolor",
-//         toolbar1: "undo redo | styleselect fontsizeselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | preview | fullscreen | forecolor backcolor",
-//         image_advtab: true,
-//         forced_root_block: 'p',
-//         width: '100%',
-//         height: 400,
-//         autoresize_min_height: 400,
-//         autoresize_max_height: 800,
-//         fullscreen_new_window: true,
-//         skin_url: 'extra/tinymce/skins/lightgray',
-//         fullscreen_settings: {
-//             theme_advanced_path_location: "top"
-//         },
-//         paste_preprocess: function (pl, o) {
-//             o.content = o.content.replace(/(<b>)/ig, "<strong>");
-//             o.content = o.content.replace(/(<\/b>)/ig, "</strong>");
-//             o.content = o.content.replace(/(<i>)/ig, "<em>");
-//             o.content = o.content.replace(/(<\/i>)/ig, "</em>");
-//         },
-//         //valid_elements: 'p,a[href],span[class],div[class],img[style|class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name]',
-//         tinyvision: {
-//             source: '/gallery',
-//             upload: function () {
-//                 $modal.open({
-//                     templateUrl: 'imgUploader.html',
-//                     controller: 'ModalImgUploaderCtrl',
-//                     size: 'md'
-//                 });
-//             }
-//         }
-//     };
-//
-//
-//     return {
-//         restrict: 'AC',
-//         require: 'ngModel',
-//         scope: false,
-//         link: function (scope, element, attrs, ngModel) {
-//             var tinymce;
-//
-//             if (!attrs.id) {
-//                 attrs.$set('id', 'ri-tinymce-' + count++);
-//             } else {
-//                 //do we have real jQuery? or querySelector
-//                 var focus = function () {
-//                     if (tinymce) {
-//                     }
-//                 };
-//                 if ($window.jQuery) {
-//                     jQuery('label[for=' + attrs.id + ']')
-//                 }
-//             }
-//
-//             var destroy = function () {
-//                 if (tinymce) {
-//                     tinymce.save();
-//                     tinymce.remove();
-//                     tinymce = null;
-//                 }
-//             };
-//             scope.destroy = destroy;
-//
-//             scope.$on('$destroy', destroy);
-//
-//             scope.$watch(attrs.ngModel, function (value, old) {
-//                 if (tinymce && angular.isDefined(value)) {
-//                     var content = tinymce.getContent();
-//                     if (angular.isString(value) && content !== value) {
-//                         tinymce.setContent(value);
-//                     }
-//                 }
-//             });
-//
-//             var init = function (config) {
-//                 config = angular.extend(config || {}, defaultConf, {
-//                     selector: '#' + attrs.id,
-//                     setup: function (ed) {
-//                         tinyMCE.PluginManager.load('tinyvision', '/admin/extra/tinyvision/build/plugin.min.js');
-//                         tinymce = ed;
-//                         $window['focus' + attrs.id] = function () {
-//                             tinymce.execCommand('mceFocus', false, attrs.id);
-//                         };
-//
-//                         var update = function () {
-//                             var content = ed.getContent();
-//                             if (ngModel.$viewValue !== content) {
-//                                 ngModel.$setViewValue(content);
-//
-//                                 //certain things like 'destroy' below triggers update inside a $digest cycle.
-//                                 if (!scope.$root.$$phase) {
-//                                     scope.$apply();
-//                                 }
-//                             }
-//                         };
-//
-//                         ed.on('change', update);
-//                         ed.on('KeyUp', update);
-//                         ed.on('ExecCommand', update);
-//                         ed.on('focus', function (e) {
-//                             angular.element(e.target.contentAreaContainer).addClass('tx-tinymce-active');
-//                         });
-//                         ed.on('blur', function (e) {
-//                             angular.element(e.target.contentAreaContainer).removeClass('tx-tinymce-active');
-//                         });
-//                     }
-//                 });
-//
-//                 tinyMCE.init(config);
-//             };
-//
-//             //If config is set watch it for changes, otherwise just init.
-//             if (attrs.riTinymce) {
-//                 scope.$watch(attrs.riTinymce, function (c, old) {
-//                     destroy();
-//                     if (c) init(c);
-//                     else init();
-//                 });
-//             } else {
-//                 init();
-//             }
-//         }
-//     }
-}])
-// // Please note that $modalInstance represents a modal window (instance) dependency.
-// // It is not the same as the $modal service used above.
-//     .controller('ModalImgUploaderCtrl', function ($scope, $modalInstance, $timeout) {
-//         $scope.success = false;
-//         $scope.error = false;
-//         $scope.$on('$dropletReady', function whenDropletReady() {
-//             $scope.dropletint.allowedExtensions(['png', 'jpg', 'bmp', 'gif']);
-//             $scope.dropletint.defineHTTPSuccess([200, 201]);
-//             $scope.dropletint.setRequestUrl('/gallery/insert');
-//         });
-//
-//         $scope.$on('$dropletSuccess', function onDropletSuccess(event, response, files) {
-//             $modalInstance.close();
-//         });
-//
-//         $scope.cancel = function () {
-//             $modalInstance.close();
-//         }
-//
-//         $modalInstance.result.finally(function () {
-//             $('iframe').contents().find('#refresh').trigger('click');
-//         });
-//
-//     });
+}]);
+angular.module('schemaForm')
+    .run(["$templateCache", function ($templateCache) {
+        // Register the plugin with TinyMCE.
+        tinymce.PluginManager.add('tinyvision', function (editor, pluginUrl) {
+            /**
+             * Object to encapsulate everything.
+             *
+             * @type {Object}
+             */
+            var self = {};
 
+            /**
+             * TinyVision window.
+             *
+             * @type {tinymce.ui.Window}
+             * @see  {@link http://www.tinymce.com/wiki.php/api4:class.tinymce.ui.Window}
+             */
+            self.win = null;
+
+            /**
+             * Height of the TinyVision window.
+             *
+             * @constant {number}
+             * @default
+             */
+            self.WINDOW_HEIGHT = 537;
+
+            /**
+             * URL to open in the TinyVision window's iframe.
+             *
+             * @constant {string}
+             * @default
+             */
+            self.WINDOW_BODY = '<tinyvision></tinyvision>';//'directives/decorators/bootstrap/tinymce/tinyvision.html';//pluginUrl + '/tinyvision.html';
+
+            /**
+             * Width of the TinyVision window.
+             *
+             * @constant {number}
+             * @default
+             */
+            self.WINDOW_WIDTH = 702;
+
+            /**
+             * Get the URL of the TinyMCE editor skin. TinyMCE doesn't provide an
+             * accessor method, so the style sheets have to be manually parsed.
+             *
+             * @return {string} URL of the TinyMCE editor skin.
+             */
+            self.skinUrl = function () {
+                var regex = /\/skins\/\w+\/skin(\.min)?\.css$/,
+                    styleSheets = document.styleSheets,
+                    styleSheetsLength = styleSheets.length,
+                    styleSheetHref,
+                    url;
+
+                for (var i = 0; i < styleSheetsLength; i += 1) {
+                    styleSheetHref = styleSheets[i].href;
+
+                    if (styleSheetHref && styleSheetHref.match(regex)) {
+                        url = styleSheetHref;
+                        break;
+                    }
+                }
+
+                return url;
+            };
+
+            /**
+             * Get the iframe's window object.
+             *
+             * @return {Window} iframe's window object.
+             */
+            self.iframeWindow = function () {
+                return self.win.getEl().getElementsByTagName('iframe')[0].contentWindow;
+            };
+
+            /**
+             * Get the currently selected item's data.
+             *
+             * @return {?Object} Item data.
+             */
+            self.selected = function () {
+                return self.iframeWindow().selected();
+            };
+
+            /**
+             * Populate the field that TinyVision was launched from with the selected
+             * item's `value`. Empties the field value if nothing selected.
+             *
+             * @param  {Element} field Field that TinyVision was launched from.
+             * @return {Object} self
+             */
+            self.populateField = function (field) {
+                var selected = self.selected();
+
+                field.value = selected ? selected.value : '';
+
+                return self;
+            };
+
+            /**
+             * Open the TinyMCE window for TinyVision. The window consists primarily of
+             * an iframe with the toolbar and items list.
+             *
+             * @param  {string} fieldId ID of field to populate with the selected value.
+             * @param  {string} fieldValue Current value of the field to populate.
+             * @param  {string} type The type of files to display.
+             * @param  {tinymce.ui.Window} parentWin Window launching TinyVision.
+             * @return {Object} self
+             */
+            self.openWindow = function (fieldId, fieldValue, type, parentWin) {
+                self.win = editor.windowManager.open({
+                    title: 'Select ' + type,
+                    html: self.WINDOW_BODY,
+                    buttons: [
+                        {
+                            text: 'Select',
+                            subtype: 'primary',
+                            onclick: function () {
+                                self.populateField(parentWin.document.getElementById(fieldId));
+                                self.win.close();
+                            }
+                        },
+                        {
+                            text: 'Cancel',
+                            onclick: 'close'
+                        }
+                    ],
+                    width: self.WINDOW_WIDTH,
+                    height: self.WINDOW_HEIGHT
+                }, {
+                    // Values passed to the iframe.
+                    fieldValue: fieldValue,
+                    options: editor.settings.tinyvision,
+                    skinUrl: self.skinUrl(),
+                    type: type
+                });
+                taka = self.win;
+                angular.element(document).injector().invoke(["$compile", "$rootScope", function ($compile, $rootScope) {
+                    var $targetDom = $("#" + self.win._id + "-body");
+                    var $scope = $targetDom.html("<tinyvision></tinyvision>").scope();
+                    $compile($targetDom)($scope);
+                    $rootScope.$digest();
+                }]);
+
+                return self;
+            };
+
+            // Add a TinyMCE command that other plugins can call to launch TinyVision.
+            editor.addCommand('tinyvision', function (options) {
+                self.openWindow(options.fieldId, options.fieldValue, options.type, options.win);
+            });
+
+            // Modify the editor's config to register TinyVision as the file browser.
+            /* jshint -W106 */
+            editor.settings.file_browser_callback = self.openWindow;
+            /* jshint +W106 */
+        });
+    }]);
+angular.module('schemaForm')
+    .directive("tinyvision", ['$http', 'models', function ($http, models) {
+        return {
+            restrict: 'E',
+            templateUrl: "directives/decorators/bootstrap/tinymce/tinyvision.html",
+            scope: true,
+            link: function (scope, element, attrs, ngModel) {
+                console.log("linked");
+                scope.findByPath = function (path) {
+                    models.galleryGetByPath("/" + path, function (data) {
+                        scope.data = data;
+                    });
+                };
+                scope.findByPath("");
+            }
+        }
+    }]);
 angular.module('schemaForm').config(
     ['schemaFormProvider', 'schemaFormDecoratorsProvider', 'sfPathProvider',
         function (schemaFormProvider, schemaFormDecoratorsProvider, sfPathProvider) {
