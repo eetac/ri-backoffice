@@ -108,13 +108,17 @@
                 .when('/settings', {
                     templateUrl: 'html/settings.html',
                     controller: 'SettingsController'
-                })
-                .when('/gallery', {
-                    templateUrl: 'html/gallery.html',
-                    resolve: {
-                        app: authCheck
-                    }
                 });
+
+            if (configs.images && configs.images.gallery) {
+                $routeProvider
+                    .when('/gallery', {
+                        templateUrl: 'html/gallery.html',
+                        resolve: {
+                            app: authCheck
+                        }
+                    });
+            }
 
 
             if (extensions && extensions.pages) {

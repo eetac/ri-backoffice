@@ -166,24 +166,31 @@ angular.module('schemaForm')
             link: function (scope, element, attrs, ngModel) {
                 var pathStack = [];
                 scope.findByPath = function (path) {
+                    scope.data = undefined;
                     if (path === "..") {
                         pathStack.pop();
                     } else if (path !== "") {
                         pathStack.push(path);
                     }
-                    models.galleryGetByPath(pathStack.join("/"), function (data) {
+                    models.galleryGetByPath(pathStack.join("/") + "/", function (data) {
                         scope.pathStack = pathStack.join("/");
-                        scope.data = data;
                         scope.isEmptyDir = isEmptyDir(data);
-                        console.log(scope.isEmptyDir);
+                        scope.data = data;
                     });
                 };
+
                 scope.setSelected = function (e) {
                     scope.selected = e;
                 };
+
                 scope.getCompleteSelected = function () {
-                    return "/gallery" + pathStack.join("/") + "/" + scope.selected;
+                    return scope.getFullPath(scope.selected);
                 };
+
+                scope.getFullPath = function (img) {
+                    return models.getGalleryPath() + pathStack.join("/") + "/" + img;
+                };
+
                 scope.openUploadModal = function () {
                     $modal.open({
                         templateUrl: 'imgUploader.html',
@@ -198,10 +205,12 @@ angular.module('schemaForm')
                         scope.refresh();
                     });
                 };
+
                 scope.refresh = function () {
                     scope.selected = undefined;
                     scope.findByPath("");
                 };
+
                 scope.remove = function (path) {
                     models.galleryDeleteByPath(pathStack.join("/") + path, function (data) {
                         if (path === "") {
@@ -211,14 +220,17 @@ angular.module('schemaForm')
                         }
                     });
                 };
+
                 scope.removeFile = function () {
                     if (!scope.selected)
                         return;
                     scope.remove("/" + scope.selected);
                 };
+
                 scope.removeDir = function () {
                     scope.remove("");
                 };
+
                 scope.createDir = function (dir) {
                     models.galleryPostByPath(pathStack.join("/") + "/" + dir, function (data) {
                         scope.dir = undefined;
@@ -246,7 +258,7 @@ angular.module('schemaForm')
             }
         }
     }
-    ]).controller('ModalImgUploaderCtrl', ["$scope", "$modalInstance", "$timeout", "loginProvider", "pathstack", function ($scope, $modalInstance, $timeout, loginProvider, pathstack) {
+    ]).controller('ModalImgUploaderCtrl', ["$scope", "$modalInstance", "$timeout", "loginProvider", "pathstack", "models", function ($scope, $modalInstance, $timeout, loginProvider, pathstack, models) {
     $scope.success = false;
     $scope.error = false;
     $scope.$on('$dropletReady', function whenDropletReady() {
@@ -256,7 +268,7 @@ angular.module('schemaForm')
                 "Authorization": "BEARER " + user.token
             });
             $scope.dropletint.defineHTTPSuccess([200, 201]);
-            $scope.dropletint.setRequestUrl('/gallery/' + pathstack.join("/"));
+            $scope.dropletint.setRequestUrl(models.getGalleryPath() + pathstack.join("/"));
         });
     });
 

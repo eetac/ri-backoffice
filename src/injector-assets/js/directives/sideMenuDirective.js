@@ -24,9 +24,11 @@
                             $scope.sections.add(elem.section, elem.title, elem);
                         });
 
-                        $scope.sections.add("Gallery", "Gallery", {
-                            clickTo: "gallery"
-                        });
+                        if (models.isGalleryEnabled()) {
+                            $scope.sections.add("Gallery", "Gallery", {
+                                clickTo: "gallery"
+                            });
+                        }
 
                         models.getModels(function (m) {
                             angular.forEach(m, function (schema) {

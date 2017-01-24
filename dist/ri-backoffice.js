@@ -309,13 +309,17 @@
                 .when('/settings', {
                     templateUrl: 'html/settings.html',
                     controller: 'SettingsController'
-                })
-                .when('/gallery', {
-                    templateUrl: 'html/gallery.html',
-                    resolve: {
-                        app: authCheck
-                    }
                 });
+
+            if (configs.images && configs.images.gallery) {
+                $routeProvider
+                    .when('/gallery', {
+                        templateUrl: 'html/gallery.html',
+                        resolve: {
+                            app: authCheck
+                        }
+                    });
+            }
 
 
             if (extensions && extensions.pages) {
@@ -907,25 +911,43 @@
                     };
 
                     service.galleryGetByPath = function (path, cb) {
-                        $http.get(prefix + '/gallery/' + path).success(function (data) {
+                        if (!service.isGalleryEnabled())
+                            return
+                        $http.get(service.getGalleryPath() + path).success(function (data) {
                             cb(data);
                         });
+
                     };
 
                     service.galleryDeleteByPath = function (path, cb) {
-                        $http.delete(prefix + '/gallery/' + path).success(function (data) {
+                        if (!service.isGalleryEnabled())
+                            return
+                        $http.delete(service.getGalleryPath() + path).success(function (data) {
                             cb(data);
                         });
                     };
 
                     service.galleryPostByPath = function (path, cb) {
                         Upload.upload({
-                            url: prefix + '/gallery/' + path,
+                            url: service.getGalleryPath() + path,
                             file: "",
                             fileFormDataName: ['file[]']
                         }).success(function (data, status, headers, config) {
                             cb(data);
                         });
+                    };
+
+                    service.isGalleryEnabled = function () {
+                        return (configs.images && configs.images.gallery && configs.images.gallery.endpoint)
+                    }
+
+                    service.getGalleryPath = function () {
+                        var path = configs.images.gallery.endpoint;
+                        if (path[0] !== "/")
+                            path = "/" + path;
+                        if (path[path.length - 1] !== "/")
+                            path += "/";
+                        return prefix + path
                     };
 
                     /**
@@ -1660,9 +1682,11 @@
                             $scope.sections.add(elem.section, elem.title, elem);
                         });
 
-                        $scope.sections.add("Gallery", "Gallery", {
-                            clickTo: "gallery"
-                        });
+                        if (models.isGalleryEnabled()) {
+                            $scope.sections.add("Gallery", "Gallery", {
+                                clickTo: "gallery"
+                            });
+                        }
 
                         models.getModels(function (m) {
                             angular.forEach(m, function (schema) {
