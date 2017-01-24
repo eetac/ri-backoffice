@@ -907,7 +907,13 @@
                     };
 
                     service.galleryGetByPath = function (path, cb) {
-                        $http.get(prefix + '/gallery' + path).success(function (data) {
+                        $http.get(prefix + '/gallery/' + path).success(function (data) {
+                            cb(data);
+                        });
+                    };
+
+                    service.galleryDeleteByPath = function (path, cb) {
+                        $http.delete(prefix + '/gallery/' + path).success(function (data) {
                             cb(data);
                         });
                     };

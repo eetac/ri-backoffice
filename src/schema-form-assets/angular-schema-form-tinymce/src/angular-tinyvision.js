@@ -168,7 +168,7 @@ angular.module('schemaForm')
                 scope.findByPath = function (path) {
                     if (path === "..") {
                         pathStack.pop();
-                    } else {
+                    } else if (path !== "") {
                         pathStack.push(path);
                     }
                     models.galleryGetByPath(pathStack.join("/"), function (data) {
@@ -186,25 +186,42 @@ angular.module('schemaForm')
                     $modal.open({
                         templateUrl: 'imgUploader.html',
                         controller: 'ModalImgUploaderCtrl',
-                        size: 'md'
+                        size: 'md',
+                        resolve: {
+                            pathstack: function () {
+                                return pathStack;
+                            }
+                        }
+                    }).result.then(function () {
+                        scope.refresh();
                     });
                 };
-                scope.findByPath("");
+                scope.refresh = function () {
+                    scope.selected = undefined;
+                    scope.findByPath("");
+                };
+                scope.remove = function () {
+                    if (!scope.selected)
+                        return;
+                    models.galleryDeleteByPath(pathStack.join("/") + "/" + scope.selected, function (data) {
+                        scope.refresh();
+                    });
+                };
+                scope.refresh();
             }
         }
     }])
-    .controller('ModalImgUploaderCtrl', ["$scope", "$modalInstance", "$timeout", "loginProvider", function ($scope, $modalInstance, $timeout, loginProvider) {
+    .controller('ModalImgUploaderCtrl', ["$scope", "$modalInstance", "$timeout", "loginProvider", "pathstack", function ($scope, $modalInstance, $timeout, loginProvider, pathstack) {
         $scope.success = false;
         $scope.error = false;
         $scope.$on('$dropletReady', function whenDropletReady() {
             loginProvider.getUser(function (user) {
-                console.log(user);
                 $scope.dropletint.allowedExtensions(['png', 'jpg', 'bmp', 'gif']);
                 $scope.dropletint.setRequestHeaders({
                     "Authorization": "BEARER " + user.token
                 });
                 $scope.dropletint.defineHTTPSuccess([200, 201]);
-                $scope.dropletint.setRequestUrl('/gallery/');
+                $scope.dropletint.setRequestUrl('/gallery/' + pathstack.join("/"));
             });
         });
 
