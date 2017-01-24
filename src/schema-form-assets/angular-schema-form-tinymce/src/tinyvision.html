@@ -231,7 +231,10 @@
     <div class="tv-toolbar mce-panel cf">
         <div class="tv-toolbar-left">
             <div class="tv-upload mce-widget mce-btn">
-                <button type="button" ng-click="remove()" id="remove"><span
+                <button ng-if="isEmptyDir" type="button" ng-click="removeDir()" id="remove-dir"><span
+                        class="tv-icon tv-icon-remove"></span> Remove directory
+                </button>
+                <button ng-if="!isEmptyDir" type="button" ng-click="removeFile()" id="remove"><span
                         class="tv-icon tv-icon-remove"></span> Remove
                 </button>
             </div>

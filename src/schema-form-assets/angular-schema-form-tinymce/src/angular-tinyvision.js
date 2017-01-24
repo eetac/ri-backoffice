@@ -174,6 +174,8 @@ angular.module('schemaForm')
                     models.galleryGetByPath(pathStack.join("/"), function (data) {
                         scope.pathStack = pathStack.join("/");
                         scope.data = data;
+                        scope.isEmptyDir = isEmptyDir(data);
+                        console.log(scope.isEmptyDir);
                     });
                 };
                 scope.setSelected = function (e) {
@@ -200,12 +202,22 @@ angular.module('schemaForm')
                     scope.selected = undefined;
                     scope.findByPath("");
                 };
-                scope.remove = function () {
+                scope.remove = function (path) {
+                    models.galleryDeleteByPath(pathStack.join("/") + path, function (data) {
+                        if (path === "") {
+                            scope.findByPath("..");
+                        } else {
+                            scope.refresh();
+                        }
+                    });
+                };
+                scope.removeFile = function () {
                     if (!scope.selected)
                         return;
-                    models.galleryDeleteByPath(pathStack.join("/") + "/" + scope.selected, function (data) {
-                        scope.refresh();
-                    });
+                    scope.remove("/" + scope.selected);
+                };
+                scope.removeDir = function () {
+                    scope.remove("");
                 };
                 scope.createDir = function (dir) {
                     models.galleryPostByPath(pathStack.join("/") + "/" + dir, function (data) {
@@ -213,34 +225,51 @@ angular.module('schemaForm')
                         scope.refresh();
                     });
                 };
+
+                function isEmptyDir(data) {
+                    if (data.image && data.image.length) {
+                        return false;
+                    }
+                    if (data.video && data.video.length) {
+                        return false;
+                    }
+                    if (data.file && data.file.length) {
+                        return false;
+                    }
+                    if (data.directories && data.directories.length) {
+                        return false;
+                    }
+                    return true;
+                }
+
                 scope.refresh();
             }
         }
-    }])
-    .controller('ModalImgUploaderCtrl', ["$scope", "$modalInstance", "$timeout", "loginProvider", "pathstack", function ($scope, $modalInstance, $timeout, loginProvider, pathstack) {
-        $scope.success = false;
-        $scope.error = false;
-        $scope.$on('$dropletReady', function whenDropletReady() {
-            loginProvider.getUser(function (user) {
-                $scope.dropletint.allowedExtensions(['png', 'jpg', 'bmp', 'gif']);
-                $scope.dropletint.setRequestHeaders({
-                    "Authorization": "BEARER " + user.token
-                });
-                $scope.dropletint.defineHTTPSuccess([200, 201]);
-                $scope.dropletint.setRequestUrl('/gallery/' + pathstack.join("/"));
+    }
+    ]).controller('ModalImgUploaderCtrl', ["$scope", "$modalInstance", "$timeout", "loginProvider", "pathstack", function ($scope, $modalInstance, $timeout, loginProvider, pathstack) {
+    $scope.success = false;
+    $scope.error = false;
+    $scope.$on('$dropletReady', function whenDropletReady() {
+        loginProvider.getUser(function (user) {
+            $scope.dropletint.allowedExtensions(['png', 'jpg', 'bmp', 'gif']);
+            $scope.dropletint.setRequestHeaders({
+                "Authorization": "BEARER " + user.token
             });
+            $scope.dropletint.defineHTTPSuccess([200, 201]);
+            $scope.dropletint.setRequestUrl('/gallery/' + pathstack.join("/"));
         });
+    });
 
-        $scope.$on('$dropletSuccess', function onDropletSuccess(event, response, files) {
-            $modalInstance.close();
-        });
+    $scope.$on('$dropletSuccess', function onDropletSuccess(event, response, files) {
+        $modalInstance.close();
+    });
 
-        $scope.cancel = function () {
-            $modalInstance.close();
-        };
+    $scope.cancel = function () {
+        $modalInstance.close();
+    };
 
-        $modalInstance.result.finally(function () {
-            // $('iframe').contents().find('#refresh').trigger('click');
-        });
+    $modalInstance.result.finally(function () {
+        // $('iframe').contents().find('#refresh').trigger('click');
+    });
 
-    }]);
+}]);
