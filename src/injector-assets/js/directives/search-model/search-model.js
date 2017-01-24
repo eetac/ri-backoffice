@@ -316,9 +316,12 @@
                                             }
                                         } else if (sfield.ref && !sfield.denormalize) {
                                             singleQuery[s.field] = s.value;
-                                            //References may be we should load before some useful information for querying references
+                                            // References may be loaded before we have some useful information for querying references
                                         } else if (sfield.ref && sfield.denormalize) {
                                             singleQuery[s.field] = {$regex: s.value, $options: 'i'};
+                                        } else if(sfield.type = "array" && sfield.items && sfield.items.ref && sfield.items.denormalize && Array.isArray(sfield.items.denormalize)) {
+                                            // This case allows to search for the first denormalized field inside an array of denormalized references
+                                            singleQuery[s.field+"."+sfield.items.denormalize[0]] = {$regex: s.value, $options: 'i'};
                                         } else {
                                             singleQuery[s.field] = s.value;
                                         }
