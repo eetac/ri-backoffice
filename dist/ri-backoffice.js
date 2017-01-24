@@ -918,6 +918,16 @@
                         });
                     };
 
+                    service.galleryPostByPath = function (path, cb) {
+                        Upload.upload({
+                            url: prefix + '/gallery/' + path,
+                            file: "",
+                            fileFormDataName: ['file[]']
+                        }).success(function (data, status, headers, config) {
+                            cb(data);
+                        });
+                    };
+
                     /**
                      * Obtains point separated field {{field}} from schema {{schema}}
                      * @param field

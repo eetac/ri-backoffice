@@ -207,6 +207,12 @@ angular.module('schemaForm')
                         scope.refresh();
                     });
                 };
+                scope.createDir = function (dir) {
+                    models.galleryPostByPath(pathStack.join("/") + "/" + dir, function (data) {
+                        scope.dir = undefined;
+                        scope.refresh();
+                    });
+                };
                 scope.refresh();
             }
         }
