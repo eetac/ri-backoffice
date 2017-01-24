@@ -312,7 +312,6 @@
                 })
                 .when('/gallery', {
                     templateUrl: 'html/gallery.html',
-                    controller: 'GalleryController',
                     resolve: {
                         app: authCheck
                     }
@@ -1645,13 +1644,17 @@
                             $scope.sections.add(elem.section, elem.title, elem);
                         });
 
+                        $scope.sections.add("Gallery", "Gallery", {
+                            clickTo: "gallery"
+                        });
+
                         models.getModels(function (m) {
                             angular.forEach(m, function (schema) {
                                 models.getModelConfig(schema, function (config) {
                                     if (!config.hideMenu) {
-                                        if(config.isSingle) {
-                                            models.getSingleModel(schema, function(doc) {
-                                                if(doc) {
+                                        if (config.isSingle) {
+                                            models.getSingleModel(schema, function (doc) {
+                                                if (doc) {
                                                     config.clickTo = "model/" + schema + "/update/" + doc[config.id];
                                                 } else {
                                                     config.clickTo = "model/" + schema + "/new";

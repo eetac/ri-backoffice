@@ -157,9 +157,8 @@ angular.module('schemaForm')
             editor.settings.file_browser_callback = self.openWindow;
             /* jshint +W106 */
         });
-    }]);
-angular.module('schemaForm')
-    .directive("tinyvision", ['$http', 'models', function ($http, models) {
+    }])
+    .directive("tinyvision", ['$http', '$modal', 'models', function ($http, $modal, models) {
         return {
             restrict: 'E',
             templateUrl: "directives/decorators/bootstrap/tinymce/tinyvision.html",
@@ -182,8 +181,43 @@ angular.module('schemaForm')
                 };
                 scope.getCompleteSelected = function () {
                     return "/gallery" + pathStack.join("/") + "/" + scope.selected;
-                }
+                };
+                scope.openUploadModal = function () {
+                    $modal.open({
+                        templateUrl: 'imgUploader.html',
+                        controller: 'ModalImgUploaderCtrl',
+                        size: 'md'
+                    });
+                };
                 scope.findByPath("");
             }
         }
+    }])
+    .controller('ModalImgUploaderCtrl', ["$scope", "$modalInstance", "$timeout", "loginProvider", function ($scope, $modalInstance, $timeout, loginProvider) {
+        $scope.success = false;
+        $scope.error = false;
+        $scope.$on('$dropletReady', function whenDropletReady() {
+            loginProvider.getUser(function (user) {
+                console.log(user);
+                $scope.dropletint.allowedExtensions(['png', 'jpg', 'bmp', 'gif']);
+                $scope.dropletint.setRequestHeaders({
+                    "Authorization": "BEARER " + user.token
+                });
+                $scope.dropletint.defineHTTPSuccess([200, 201]);
+                $scope.dropletint.setRequestUrl('/gallery/');
+            });
+        });
+
+        $scope.$on('$dropletSuccess', function onDropletSuccess(event, response, files) {
+            $modalInstance.close();
+        });
+
+        $scope.cancel = function () {
+            $modalInstance.close();
+        };
+
+        $modalInstance.result.finally(function () {
+            // $('iframe').contents().find('#refresh').trigger('click');
+        });
+
     }]);

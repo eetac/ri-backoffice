@@ -111,7 +111,6 @@
                 })
                 .when('/gallery', {
                     templateUrl: 'html/gallery.html',
-                    controller: 'GalleryController',
                     resolve: {
                         app: authCheck
                     }

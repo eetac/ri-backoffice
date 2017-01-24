@@ -23,13 +23,13 @@ angular.module('schemaForm').directive('riTinymce', ['$http', '$window', '$modal
         //valid_elements: 'p,a[href],span[class],div[class],img[style|class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name]',
         tinyvision: {
             source: '/gallery',
-            upload: function () {
-                $modal.open({
-                    templateUrl: 'imgUploader.html',
-                    controller: 'ModalImgUploaderCtrl',
-                    size: 'md'
-                });
-            }
+            // upload: function () {
+            //     $modal.open({
+            //         templateUrl: 'imgUploader.html',
+            //         controller: 'ModalImgUploaderCtrl',
+            //         size: 'md'
+            //     });
+            // }
         }
     };
 
