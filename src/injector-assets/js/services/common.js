@@ -149,9 +149,18 @@
                         if (obj[k].properties) {
                             searchFields(obj[k].properties, parent ? (parent + separator + k) : k);
                         } else if (obj[k].denormalize) {
-                            angular.forEach(obj[k].denormalize, function (field) {
-                                fields.push((parent ? (parent + separator) : "") + k + separator + field);
-                            });
+                            if(Array.isArray(obj[k].denormalize)) {
+                                angular.forEach(obj[k].denormalize, function(field) {
+                                    if(typeof(field) !== 'object') {
+                                        fields.push((parent ? (parent + separator) : "") + k + separator + field);
+                                    } else {
+                                        fields.push(
+                                            (parent ? (parent + separator) : "") + k + separator + field.target);
+                                    }
+                                });
+                            } else {
+                                fields.push((parent ? (parent + separator) : "") + k + separator + obj[k].denormalize);
+                            }
                         } else {
                             fields.push(parent ? (parent + separator + k) : k);
                         }

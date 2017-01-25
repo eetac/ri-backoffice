@@ -12,7 +12,6 @@
                     scope.models = models;
                     var modelName = $routeParams.schema;
 
-
                     scope.buildPath = function (field, schema) {
                         var sc = models.getFieldFromSchema(field, schema);
                         var title;
@@ -84,18 +83,44 @@
                         scope.searches.push(s);
                     };
 
+                    function isHidden(f) {
+                        if(!f) return false;
+                        if(!f.class) return false;
+                        if(f.class.split(' ').indexOf('hidden') < 0){
+                            return false
+                        } else {
+                            return true;
+                        }
+                    }
+
                     models.getModelSchema(modelName, function (schema) {
                         if (schema) {
                             scope.schema = schema;
                             scope.allFields = common.getAllSchemaFields(schema);
                             scope.availableFields = scope.allFields.filter(function (val) {
                                 var f = models.getFieldFromSchema(val, schema);
-                                return (f && f.format != "image" && f.format != "mixed");
+                                console.log("VAL ", val);
+                                if(f) {
+                                    console.log("TYPE ", f.type);
+                                    console.log("FORMAT ", f.format);
+                                } else {
+                                    console.log("BUUUUUUUUUUUG!");
+                                }
+                                return (f && !isHidden(f) && f.format != "image" && f.format != "mixed" );
                             });
                         }
-                    });
-                    models.getModelConfig(modelName, function (config) {
-                        scope.addSearch(config.displayField);
+
+                        models.getModelConfig(modelName, function (config) {
+                            scope.addSearch(config.displayField);
+
+                            scope.availableFields = scope.availableFields.filter(function(val) {
+                                if(config.searchableFields) {
+                                    return !(config.searchableFields.indexOf(val) == -1);
+                                } else {
+                                    return true;
+                                }
+                            });
+                        });
                     });
 
                     /*scope.$on('$routeChangeSuccess', function (event, current, previous) {
