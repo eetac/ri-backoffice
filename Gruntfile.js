@@ -191,6 +191,7 @@ module.exports = function (grunt) {
                             '<%= config.srcPath %>schema-form-assets/angular-schema-form-datetimepicker/dist/bootstrap-datetimepicker.js',
                             '<%= config.srcPath %>schema-form-assets/angular-schema-form-new-image/dist/bootstrap-new-imageinjector.js',
                             '<%= config.srcPath %>schema-form-assets/angular-schema-form-image/dist/bootstrap-imageinjector.js',
+                            '<%= config.srcPath %>schema-form-assets/angular-schema-form-galleryimage/dist/bootstrap-galleryimage.js',
                             '<%= config.srcPath %>schema-form-assets/angular-schema-form-file/dist/bootstrap-fileinjector.js',
                             '<%= config.srcPath %>schema-form-assets/angular-schema-form-mixed/dist/bootstrap-mixed.js',
                             '<%= config.srcPath %>schema-form-assets/angular-schema-form-button/dist/bootstrap-button.js',

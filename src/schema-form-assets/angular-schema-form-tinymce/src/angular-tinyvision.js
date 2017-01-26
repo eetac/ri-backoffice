@@ -162,7 +162,9 @@ angular.module('schemaForm')
         return {
             restrict: 'E',
             templateUrl: "directives/decorators/bootstrap/tinymce/tinyvision.html",
-            scope: true,
+            scope: {
+                ngModel: "="
+            },
             link: function (scope, element, attrs, ngModel) {
                 var pathStack = [];
                 scope.findByPath = function (path) {
@@ -181,6 +183,10 @@ angular.module('schemaForm')
 
                 scope.setSelected = function (e) {
                     scope.selected = e;
+                    scope.ngModel = scope.getCompleteSelected();
+                    console.log("ngModel " + ngModel);
+                    console.log("scope.ngModel " + scope.ngModel);
+                    console.log("selected " + scope.selected);
                 };
 
                 scope.getCompleteSelected = function () {
@@ -188,7 +194,7 @@ angular.module('schemaForm')
                 };
 
                 scope.getFullPath = function (img) {
-                    return models.getGalleryPath() + pathStack.join("/") + "/" + img;
+                    return (models.getGalleryPath() + pathStack.join("/") + "/" + img).replace(/([^:]\/)\/+/g, "$1");
                 };
 
                 scope.openUploadModal = function () {
@@ -258,30 +264,33 @@ angular.module('schemaForm')
             }
         }
     }
-    ]).controller('ModalImgUploaderCtrl', ["$scope", "$modalInstance", "$timeout", "loginProvider", "pathstack", "models", function ($scope, $modalInstance, $timeout, loginProvider, pathstack, models) {
-    $scope.success = false;
-    $scope.error = false;
-    $scope.$on('$dropletReady', function whenDropletReady() {
-        loginProvider.getUser(function (user) {
-            $scope.dropletint.allowedExtensions(['png', 'jpg', 'bmp', 'gif']);
-            $scope.dropletint.setRequestHeaders({
-                "Authorization": "BEARER " + user.token
+    ])
+    .controller('ModalImgUploaderCtrl', ["$scope", "$modalInstance", "$timeout", "loginProvider", "pathstack", "models",
+        function ($scope, $modalInstance, $timeout, loginProvider, pathstack, models) {
+            $scope.success = false;
+            $scope.error = false;
+            $scope.$on('$dropletReady', function whenDropletReady() {
+                loginProvider.getUser(function (user) {
+                    $scope.dropletint.allowedExtensions(['png', 'jpg', 'bmp', 'gif']);
+                    $scope.dropletint.setRequestHeaders({
+                        "Authorization": "BEARER " + user.token
+                    });
+                    $scope.dropletint.defineHTTPSuccess([200, 201]);
+                    $scope.dropletint.setRequestUrl(models.getGalleryPath() + pathstack.join("/"));
+                });
             });
-            $scope.dropletint.defineHTTPSuccess([200, 201]);
-            $scope.dropletint.setRequestUrl(models.getGalleryPath() + pathstack.join("/"));
-        });
-    });
 
-    $scope.$on('$dropletSuccess', function onDropletSuccess(event, response, files) {
-        $modalInstance.close();
-    });
+            $scope.$on('$dropletSuccess', function onDropletSuccess(event, response, files) {
+                $modalInstance.close();
+            });
 
-    $scope.cancel = function () {
-        $modalInstance.close();
-    };
+            $scope.cancel = function () {
+                $modalInstance.close();
+            };
 
-    $modalInstance.result.finally(function () {
-        // $('iframe').contents().find('#refresh').trigger('click');
-    });
+            $modalInstance.result.finally(function () {
+                // $('iframe').contents().find('#refresh').trigger('click');
+            });
 
-}]);
+        }]
+    );

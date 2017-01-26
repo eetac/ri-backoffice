@@ -471,7 +471,7 @@
 
                     service.isGalleryEnabled = function () {
                         return (configs.images && configs.images.gallery && configs.images.gallery.endpoint)
-                    }
+                    };
 
                     service.getGalleryPath = function () {
                         var path = configs.images.gallery.endpoint;
