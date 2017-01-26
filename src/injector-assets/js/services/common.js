@@ -155,11 +155,12 @@
                                         fields.push((parent ? (parent + separator) : "") + k + separator + field);
                                     } else {
                                         fields.push(
-                                            (parent ? (parent + separator) : "") + k + separator + field.target);
+                                            (parent ? (parent + separator) : "") + k + separator + field.target
+                                        );
                                     }
                                 });
                             } else {
-                                fields.push((parent ? (parent + separator) : "") + k + separator + obj[k].denormalize);
+                                fields.push((parent ? (parent + separator) : "") + k);
                             }
                         } else {
                             fields.push(parent ? (parent + separator + k) : k);
