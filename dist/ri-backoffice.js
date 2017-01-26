@@ -1509,11 +1509,12 @@
                                         fields.push((parent ? (parent + separator) : "") + k + separator + field);
                                     } else {
                                         fields.push(
-                                            (parent ? (parent + separator) : "") + k + separator + field.target);
+                                            (parent ? (parent + separator) : "") + k + separator + field.target
+                                        );
                                     }
                                 });
                             } else {
-                                fields.push((parent ? (parent + separator) : "") + k + separator + obj[k].denormalize);
+                                fields.push((parent ? (parent + separator) : "") + k);
                             }
                         } else {
                             fields.push(parent ? (parent + separator + k) : k);
@@ -2083,13 +2084,40 @@ var Sections = function () {
                     };
 
                     function isHidden(f) {
-                        if(!f) return false;
-                        if(!f.class) return false;
-                        if(f.class.split(' ').indexOf('hidden') < 0){
+                        if(!f) {
+                            return true;
+                        }
+                        if(!f.class) {
+                            return false;
+                        }
+                        if(f.class.split(' ').indexOf('hidden') < 0) {
                             return false
                         } else {
                             return true;
                         }
+                    }
+
+                    function hasToGenerateSearchField(f) {
+                        if(isHidden(f)) {
+                            return false;
+                        }
+
+                        if(f.type == 'array') {
+                            if(f.items && f.items.type == 'string' && !f.items.format) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        } if(f.type == 'object') {
+                            if(f.format) {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        } else {
+                            return f.format != "image" && f.format != "mixed";
+                        }
+
                     }
 
                     models.getModelSchema(modelName, function (schema) {
@@ -2098,14 +2126,12 @@ var Sections = function () {
                             scope.allFields = common.getAllSchemaFields(schema);
                             scope.availableFields = scope.allFields.filter(function (val) {
                                 var f = models.getFieldFromSchema(val, schema);
-                                console.log("VAL ", val);
-                                if(f) {
-                                    console.log("TYPE ", f.type);
-                                    console.log("FORMAT ", f.format);
-                                } else {
-                                    console.log("BUUUUUUUUUUUG!");
+
+                                if (!f) {
+                                    console.log("WARNING: FIELD NOT FOUND WHEN GENERATING SEARCH FIELDS: ", val)
                                 }
-                                return (f && !isHidden(f) && f.format != "image" && f.format != "mixed" );
+
+                                return hasToGenerateSearchField(f);
                             });
                         }
 
