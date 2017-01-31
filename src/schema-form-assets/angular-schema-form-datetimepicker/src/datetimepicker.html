@@ -9,6 +9,6 @@
         <!--<div class="col-md-6">-->
             <!--<div date-picker="modelHours" view="hours" max-view="hours"></div>-->
         <!--</div>-->
-        <input date-time type="datetime" ng-model="modelDate" ng-change="{{updateDate(modelDate)}}" view="date" max-view="date" class="form-control" format="medium">
+        <input date-time ng-disabled="form.readonly" type="datetime" ng-model="modelDate" ng-change="{{updateDate(modelDate)}}" view="date" max-view="date" class="form-control" format="medium">
     </div>
 </div>
