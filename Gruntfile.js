@@ -215,15 +215,15 @@ module.exports = function (grunt) {
         uglify: {
             options: {
                 banner: '/*! <%= config.appName %> <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
-                mangle: grunt.config('compress'),
-                preserveComments: !grunt.config('compress'),
-                beautify: !grunt.config('compress'),
-                compress: (grunt.config('compress')?{}:false)
+                //mangle: grunt.config('compress'),
+                //preserveComments: !grunt.config('compress'),
+                //beautify: !grunt.config('compress'),
+                //compress: (grunt.config('compress')?{}:false)
                 // Unmcomment following lines if you need to debug.
-                //mangle: false,
-                //preserveComments: true,
-                //compress: false,
-                //beautify: true
+                mangle: false,
+                preserveComments: true,
+                compress: false,
+                beautify: true
             },
             lib_build: {
                 options: {

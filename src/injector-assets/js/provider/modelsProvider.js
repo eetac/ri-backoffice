@@ -410,26 +410,6 @@
                             }
                         }
 
-                        /*fieldAttr(params);
-
-                         function fieldAttr(obj, parent) {
-
-                         for (var key in obj) {
-                         var full = parent ? parent + "." + key : key;
-                         if(typeof(obj[key]) == "object"){
-                         fieldAttr(obj[key], full);
-                         }
-                         if (obj.hasOwnProperty(key)) {
-                         var hiddenField = document.createElement("input");
-                         hiddenField.setAttribute("type", "hidden");
-                         hiddenField.setAttribute("name", full);
-                         hiddenField.setAttribute("value", obj[full]);
-
-                         form.appendChild(hiddenField);
-                         }
-                         }
-                         }*/
-
                         form.submit();
                     };
 
@@ -441,6 +421,7 @@
                             });
                         });
                     };
+
 
                     service.galleryGetByPath = function (path, cb) {
                         if (!service.isGalleryEnabled())
@@ -482,6 +463,29 @@
                         return prefix + path
                     };
 
+                    function fieldIsDenormalized(retElem, element) {
+                        var ret = null;
+
+                        // There is no denormalize field list
+                        if (!retElem || !retElem.denormalize) {
+                            return null;
+                        }
+
+                        // Look for the element as a string and return the position if found
+                        var i = retElem.denormalize.indexOf(element);
+                        if(i>-1) {
+                            return i;
+                        }
+
+                        // Look for the element as an object with target and source, return the position if found
+                        for(i=0;i<retElem.denormalize.length;i++) {
+                            if(typeof(retElem.denormalize[i])==='object' && retElem.denormalize[i].target == element) {
+                                ret = i;
+                            }
+                        }
+                        return ret;
+                    }
+
                     /**
                      * Obtains point separated field {{field}} from schema {{schema}}
                      * @param field
@@ -494,17 +498,30 @@
                         } else {
                             var elements = field.split('.');
                             var retElem;
+
                             for (var i in elements) {
+                                var denormalizedFieldPosition = fieldIsDenormalized(retElem, elements[i]);
+
                                 if (retElem && retElem.properties) {
                                     retElem = retElem.properties[elements[i]];
-                                } else if (retElem && retElem.ref && retElem.denormalize && retElem.denormalize.indexOf(elements[i]) > -1) {
-                                    //Todo: Call api and resolve the model field
+                                } else if (retElem && retElem.ref && denormalizedFieldPosition != null) {
+                                    var source;
+                                    var target;
+
+                                    var denormalizedField = retElem.denormalize[denormalizedFieldPosition];
+                                    if(typeof(denormalizedField)==='string') {
+                                        source = denormalizedField;
+                                        target = denormalizedField;
+                                    } else {
+                                        source = denormalizedField.source;
+                                        target = denormalizedField.target;
+                                    }
+
                                     var refSchema = service.getModel(retElem.ref);
-                                    retElem = angular.copy(service.getFieldFromSchema(elements[i], refSchema.schema));
+                                    retElem = angular.copy(service.getFieldFromSchema(source, refSchema.schema));
                                     if (retElem && retElem.title) {
                                         var index = field.lastIndexOf(".");
                                         retElem.title = common.prettifyTitle(field.substring(0, index) + '.' + retElem.title);
-                                        //retElem.title = "A "+retElem.title;
                                     }
                                 } else {
                                     retElem = schema[elements[i]];

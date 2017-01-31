@@ -12,7 +12,6 @@
                     scope.models = models;
                     var modelName = $routeParams.schema;
 
-
                     scope.buildPath = function (field, schema) {
                         var sc = models.getFieldFromSchema(field, schema);
                         var title;
@@ -84,18 +83,69 @@
                         scope.searches.push(s);
                     };
 
+                    function isHidden(f) {
+                        if(!f) {
+                            return true;
+                        }
+                        if(!f.class) {
+                            return false;
+                        }
+                        if(f.class.split(' ').indexOf('hidden') < 0) {
+                            return false
+                        } else {
+                            return true;
+                        }
+                    }
+
+                    function hasToGenerateSearchField(f) {
+                        if(isHidden(f)) {
+                            return false;
+                        }
+
+                        if(f.type == 'array') {
+                            if(f.items && f.items.type == 'string' && !f.items.format) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        } if(f.type == 'object') {
+                            if(f.format) {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        } else {
+                            return f.format != "image" && f.format != "mixed";
+                        }
+
+                    }
+
                     models.getModelSchema(modelName, function (schema) {
                         if (schema) {
                             scope.schema = schema;
                             scope.allFields = common.getAllSchemaFields(schema);
                             scope.availableFields = scope.allFields.filter(function (val) {
                                 var f = models.getFieldFromSchema(val, schema);
-                                return (f && f.format != "image" && f.format != "mixed");
+
+                                if (!f) {
+                                    console.log("WARNING: FIELD NOT FOUND WHEN GENERATING SEARCH FIELDS: ", val)
+                                }
+
+                                return hasToGenerateSearchField(f);
                             });
                         }
-                    });
-                    models.getModelConfig(modelName, function (config) {
-                        scope.addSearch(config.displayField);
+
+                        models.getModelConfig(modelName, function (config) {
+                            scope.addSearch(config.displayField);
+
+                            scope.availableFields = scope.availableFields.filter(function(val) {
+                                if(config.searchableFields) {
+                                    return !(config.searchableFields.indexOf(val) == -1);
+                                } else {
+                                    return true;
+                                }
+                            });
+                        });
                     });
 
                     /*scope.$on('$routeChangeSuccess', function (event, current, previous) {
@@ -316,9 +366,12 @@
                                             }
                                         } else if (sfield.ref && !sfield.denormalize) {
                                             singleQuery[s.field] = s.value;
-                                            //References may be we should load before some useful information for querying references
+                                            // References may be loaded before we have some useful information for querying references
                                         } else if (sfield.ref && sfield.denormalize) {
                                             singleQuery[s.field] = {$regex: s.value, $options: 'i'};
+                                        } else if(sfield.type = "array" && sfield.items && sfield.items.ref && sfield.items.denormalize && Array.isArray(sfield.items.denormalize)) {
+                                            // This case allows to search for the first denormalized field inside an array of denormalized references
+                                            singleQuery[s.field+"."+sfield.items.denormalize[0]] = {$regex: s.value, $options: 'i'};
                                         } else {
                                             singleQuery[s.field] = s.value;
                                         }
