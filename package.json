@@ -1,6 +1,6 @@
 {
   "name": "ri-backoffice",
-  "version": "2.0.10",
+  "version": "2.1.0",
   "description": "Administration panel for route-injector package",
   "author": "Gerard Solé",
   "contributors": [
@@ -44,8 +44,7 @@
     "transpile": "./command.sh transpile",
     "build_git_hook": "./command.sh build"
   },
-  "config": {
-  },
+  "config": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/RouteInjector/ri-backoffice.git"
