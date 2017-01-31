@@ -13,6 +13,7 @@ module.exports = function (grunt) {
         sassFolder: '<%= config.injectorFolder %>styles/sass',
         cssFolder: '<%= config.injectorFolder %>styles/css',
         i18nPath: '<%= config.srcPath %>i18n',
+        imagesFolder: '<%= config.srcPath %>images',
         distFolder: 'dist/'
     };
 
@@ -278,7 +279,6 @@ module.exports = function (grunt) {
                     '<%= config.bowerFolder %>tinymce/tinymce.min.js',
                     '<%= config.bowerFolder %>tinymce/plugins/**/plugin.min.js',
                     '<%= config.bowerFolder %>tinymce/themes/**/theme.min.js',
-                    '<%= config.bowerFolder %>angular-ui-tinymce/dist/tinymce.min.js',
                     '<%= config.bowerFolder %>angular-ui-ace/ui-ace.min.js',
                     '<%= config.bowerFolder %>angular-spectrum-colorpicker/dist/angular-spectrum-colorpicker.min.js',
                     '<%= config.bowerFolder %>d3/d3.min.js',
@@ -319,7 +319,6 @@ module.exports = function (grunt) {
                     '<%= config.bowerFolder %>tinymce/tinymce.js',
                     '<%= config.bowerFolder %>tinymce/plugins/**/plugin.js',
                     '<%= config.bowerFolder %>tinymce/themes/**/theme.js',
-                    '<%= config.bowerFolder %>angular-ui-tinymce/src/tinymce.js',
                     '<%= config.bowerFolder %>angular-ui-ace/ui-ace.js',
                     '<%= config.bowerFolder %>angular-spectrum-colorpicker/dist/angular-spectrum-colorpicker.js',
                     '<%= config.bowerFolder %>d3/d3.js',
@@ -401,6 +400,12 @@ module.exports = function (grunt) {
                 src: ['index.html'],           // copy all files and subfolders
                 dest: '<%= config.distFolder %>',
                 expand: true
+            },
+            images: {
+                cwd: '<%= config.imagesFolder %>',
+                src: ['*.*'],           // copy all files and subfolders
+                dest: '<%= config.distFolder %>images',
+                expand: true
             }
         }
     });
@@ -431,6 +436,6 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', ['clean:initclean', 'ngAnnotate:addRemoveLibs', 'ngAnnotate:addRemove', /*'jshint:uses_defaults',*/
         'uglify:build', 'uglify:lib_build', 'concat:dist', 'sass:dev', 'clean:postmin', 'copy:dist', 'copy:tinymceskin',
-        'copy:html', 'copy:cssinjector', 'copy:stylesbower', 'copy:codemirror', 'copy:i18n', 'copy:index']);//, 'preprocess:html']);
+        'copy:html', 'copy:cssinjector', 'copy:stylesbower', 'copy:codemirror', 'copy:i18n', 'copy:index', 'copy:images']);//, 'preprocess:html']);
 
 };

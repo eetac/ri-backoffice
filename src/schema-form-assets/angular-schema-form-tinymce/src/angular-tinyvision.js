@@ -238,6 +238,7 @@ angular.module('schemaForm')
                 };
 
                 scope.createDir = function (dir) {
+                    if (!dir) return;
                     models.galleryPostByPath(pathStack.join("/") + "/" + dir, function (data) {
                         scope.dir = undefined;
                         scope.refresh();

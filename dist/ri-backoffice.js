@@ -86,7 +86,7 @@
     'use strict';
     var app = angular.module('injectorApp', ['ngRoute', 'ngBiscuit', 'schemaForm', 'datePicker', 'ui.select',
             'ui.ace', 'ui.codemirror', 'ui.bootstrap', 'ngFileUpload', 'ngDroplet', 'punchCard', 'nvd3ChartDirectives', 'flash', 'ngDialog', 'angular-loading-bar',
-            'pascalprecht.translate', 'ngCookies', 'ui.tinymce'],
+            'pascalprecht.translate', 'ngCookies'],
         ['$rootScopeProvider', function ($rootScopeProvider) {
             $rootScopeProvider.digestTtl(15);
         }])
@@ -1191,6 +1191,9 @@
                     if (response.status === 401) {
                         console.log("Response 401");
                     } else if (response.status === 201) {
+                        if (configs.images && configs.images.gallery && configs.images.gallery.endpoint && response.config.url.indexOf(configs.images.gallery.endpoint) == 0) {
+                            return response || $q.when(response);
+                        }
                         flash.success("Done", "Document saved successfully");
                     }
                     return response || $q.when(response);

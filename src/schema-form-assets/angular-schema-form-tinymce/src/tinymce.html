@@ -2,8 +2,8 @@
     <label class="control-label" ng-show="showTitle()">{{form.title}}</label>
     <textarea
             ri-tinymce="form.tinymceOptions"
-            ui-tinymce
             ng-model="$$value$$"
+            style="background-color: white"
             schema-validate="form">
     </textarea>
     <span class="help-block">{{ (hasError() && errorMessage(schemaError())) || form.description}}</span>

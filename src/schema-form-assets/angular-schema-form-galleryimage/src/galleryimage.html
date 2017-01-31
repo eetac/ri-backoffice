@@ -4,9 +4,9 @@
 
     <div class="input-group">
         <a ri-single-gallery-view ng-click="openGallery()" ng-model="$$value$$" alt="Click to open Gallery">
-            <img ng-src="{{image}}" class="img-thumbnail" width="200" height="150">
+            <img ng-src="{{image}}" error="{{defaultErrorImage}}" class="img-thumbnail" width="200" height="150">
         </a>
-        {{$$value$$}}
+        <p>{{$$value$$}}</p>
         <div>
             <a ng-if="imageExists" download="{{$$value$$}}" ng-href="{{image}}" target="_self"
                class="btn btn-default"><span class="glyphicon glyphicon-cloud-download"></span></a>

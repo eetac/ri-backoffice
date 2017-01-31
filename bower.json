@@ -65,8 +65,7 @@
     "angular-animate": "*",
     "angular-translate": "*",
     "angular-translate-loader-partial": "*",
-    "angular-translate-storage-local": "*",
-    "angular-ui-tinymce": "^0.0.18"
+    "angular-translate-storage-local": "*"
   },
   "resolutions": {
     "angular": "1.4.2",

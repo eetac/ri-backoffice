@@ -1,4 +1,5 @@
 angular.module('schemaForm').directive('riTinymce', ['$http', '$window', '$modal', function ($http, $window, $modal) {
+    var count = 0;
 
     var defaultConf = {
         plugins: "code image -tinyvision autoresize fullscreen media link paste preview textcolor",
@@ -21,16 +22,16 @@ angular.module('schemaForm').directive('riTinymce', ['$http', '$window', '$modal
             o.content = o.content.replace(/(<\/i>)/ig, "</em>");
         },
         //valid_elements: 'p,a[href],span[class],div[class],img[style|class|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name]',
-        tinyvision: {
-            source: '/gallery',
-            // upload: function () {
-            //     $modal.open({
-            //         templateUrl: 'imgUploader.html',
-            //         controller: 'ModalImgUploaderCtrl',
-            //         size: 'md'
-            //     });
-            // }
-        }
+        // tinyvision: {
+        //     source: '/gallery',
+        //     // upload: function () {
+        //     //     $modal.open({
+        //     //         templateUrl: 'imgUploader.html',
+        //     //         controller: 'ModalImgUploaderCtrl',
+        //     //         size: 'md'
+        //     //     });
+        //     // }
+        // }
     };
 
 
@@ -39,28 +40,56 @@ angular.module('schemaForm').directive('riTinymce', ['$http', '$window', '$modal
         require: 'ngModel',
         scope: false,
         link: function (scope, element, attrs, ngModel) {
-            var tinyInstance;
+            var tinymce;
 
-            function ensureInstance() {
-                if (!tinyInstance) {
-                    tinyInstance = tinymce.get(attrs.id);
+            if (!attrs.id) {
+                attrs.$set('id', 'ri-tinymce-' + count++);
+            } else {
+                //do we have real jQuery? or querySelector
+                var focus = function () {
+                    if (tinymce) {
+                    }
+                };
+                if ($window.jQuery) {
+                    jQuery('label[for=' + attrs.id + ']')
                 }
             }
 
+            // function ensureInstance() {
+            //     if (!tinyInstance) {
+            //         tinyInstance = tinymce.get(attrs.id);
+            //     }
+            // }
+
             function destroy() {
-                ensureInstance();
-                if (tinyInstance) {
-                    console.log("in destroy", tinyInstance);
-                    tinyInstance.remove();
-                    tinyInstance = null;
+                if (tinymce) {
+                    tinymce.save();
+                    tinymce.remove();
+                    tinymce = null;
                 }
-            };
+            }
+
+            scope.destroy = destroy;
+
+
+            scope.$on('$destroy', destroy);
+
+            scope.$watch(attrs.ngModel, function (value, old) {
+                console.log(value, old);
+                if (tinymce && angular.isDefined(value)) {
+                    var content = tinymce.getContent();
+                    if (angular.isString(value) && content !== value) {
+                        tinymce.setContent(value);
+                    }
+                }
+            });
 
             var init = function (config) {
                 config = angular.extend(config || {}, defaultConf, {
                     selector: '#' + attrs.id,
                     setup: function (editor) {
                         // tinyMCE.PluginManager.load('tinyvision', '/admin/extra/tinyvision/build/plugin.min.js');
+                        tinymce = editor;
                         $window['focus' + attrs.id] = function () {
                             tinymce.execCommand('mceFocus', false, attrs.id);
                         };
@@ -86,10 +115,11 @@ angular.module('schemaForm').directive('riTinymce', ['$http', '$window', '$modal
                         editor.on('blur', function (e) {
                             angular.element(e.target.contentAreaContainer).removeClass('tx-tinymce-active');
                         });
+                        console.log("--> " + ngModel.$viewValue);
                     }
                 });
 
-                tinymce.init(config);
+                tinyMCE.init(config);
             };
 
             // If config is set watch it for changes, otherwise just init.

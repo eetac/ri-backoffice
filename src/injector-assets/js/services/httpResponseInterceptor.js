@@ -18,6 +18,9 @@
                     if (response.status === 401) {
                         console.log("Response 401");
                     } else if (response.status === 201) {
+                        if (configs.images && configs.images.gallery && configs.images.gallery.endpoint && response.config.url.indexOf(configs.images.gallery.endpoint) == 0) {
+                            return response || $q.when(response);
+                        }
                         flash.success("Done", "Document saved successfully");
                     }
                     return response || $q.when(response);
