@@ -8,7 +8,6 @@
                 templateUrl: 'html/side-menu.html',
                 controller: function ($scope, $routeParams, $location, common, models, customMenu, $window, $rootScope) {
                     $scope.common = common;
-
                     $scope.$on("$routeChangeStart", function (event, next, current) {
                         if (next.params.schema) {
                             $scope.actualSchema = next.params.schema;
@@ -65,7 +64,7 @@
                     $scope.click = function (section, name, conf) {
                         $scope.parentSchema = section;
                         $scope.actualSchema = name;
-                        $scope.actualSection = section;
+                        $scope.actualSection = conf.section || section;
                         if (conf.clickTo) {
                             $location.path(conf.clickTo);
                         } else if (conf.url) {
