@@ -2,9 +2,11 @@
     'use strict';
 
     angular.module('injectorApp')
-        .controller('CreateController', function ($scope, $http, $location, $routeParams, models, $controller) {
+        .controller('CreateController', function ($scope, $http, $location, $routeParams, models, $controller,common) {
             var modelName = $routeParams.schema;
             $scope.action = "create";
+            $scope.common=common;
+
             models.getModel(modelName, function (m) {
                 if (!m.config.post) {
                     $location.path('/model/' + modelName);

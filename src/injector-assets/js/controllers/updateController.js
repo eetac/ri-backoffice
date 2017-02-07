@@ -2,10 +2,11 @@
     'use strict';
 
     angular.module('injectorApp')
-        .controller('UpdateController', function ($scope, $http, $routeParams, $location, models, $controller) {
+        .controller('UpdateController', function ($scope, $http, $routeParams, $location, models, $controller,common) {
             var modelName = $routeParams.schema;
             var id = $routeParams.id;
             var shard = $routeParams.shard;
+            $scope.common=common;
 
             models.getModel(modelName, function (m) {
                 models.getDocument(modelName, id, shard, function (document) {
