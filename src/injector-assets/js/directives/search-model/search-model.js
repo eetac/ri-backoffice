@@ -105,7 +105,11 @@
                         if(f.type == 'array') {
                             if(f.items && f.items.type == 'string' && !f.items.format) {
                                 return true;
-                            } else {
+                            }
+                            if(f.items && f.items.type == 'object' && f.items.format=="available-search") {
+                                return true;
+                            }
+                            else {
                                 return false;
                             }
                         } if(f.type == 'object') {
