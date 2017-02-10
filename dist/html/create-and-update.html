@@ -2,10 +2,10 @@
     <div ng-include src="'html/inc/breadcrumb.html'"></div>
 
     <div>
-        <h1 class="page-title" ng-if="action=='create'">{{'CREATE_UPDATE.CREATE' | translate:{modelName:schema.title}
+        <h1 class="page-title" ng-if="action=='create'">{{'CREATE_UPDATE.CREATE' | translate:{modelName:common.prettifyTitle(schema.title)}
             }}</h1>
 
-        <h1 class="page-title" ng-if="action=='update'">{{'CREATE_UPDATE.UPDATE' | translate:{modelName:schema.title}
+        <h1 class="page-title" ng-if="action=='update'">{{'CREATE_UPDATE.UPDATE' | translate:{modelName:common.prettifyTitle(schema.title)}
             }}</h1>
         <flash-message></flash-message>
         <div id="error" ng-show="validation" class="alert alert-danger" role="alert"><strong>{{'CREATE_UPDATE.VALIDATION.TITLE'

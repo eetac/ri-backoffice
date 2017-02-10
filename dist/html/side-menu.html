@@ -2,9 +2,7 @@
     <accordion class="page-sidebar-menu" close-others="true">
         <accordion-group ng-repeat="(key, obj) in sections.get()" is-disabled="isDisabled"
                          ng-class="key == actualSection ? 'active' : ''" is-open="isOpen">
-
-
-            <accordion-heading ng-click="openSection(key)">
+            <accordion-heading>
                 <i class="glyphicon glyphicon-chevron-right"></i>
                 {{key}}<!--<i class="pull-right glyphicon glyphicon-chevron-right"></i>-->
                 <span class="selected"></span>

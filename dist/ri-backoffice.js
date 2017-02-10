@@ -1696,7 +1696,6 @@
                 templateUrl: 'html/side-menu.html',
                 controller: ['$scope', '$routeParams', '$location', 'common', 'models', 'customMenu', '$window', '$rootScope', function ($scope, $routeParams, $location, common, models, customMenu, $window, $rootScope) {
                     $scope.common = common;
-
                     $scope.$on("$routeChangeStart", function (event, next, current) {
                         if (next.params.schema) {
                             $scope.actualSchema = next.params.schema;
@@ -1753,7 +1752,7 @@
                     $scope.click = function (section, name, conf) {
                         $scope.parentSchema = section;
                         $scope.actualSchema = name;
-                        $scope.actualSection = section;
+                        $scope.actualSection = conf.section || section;
                         if (conf.clickTo) {
                             $location.path(conf.clickTo);
                         } else if (conf.url) {
@@ -1781,7 +1780,7 @@ var Sections = function () {
     var menu = {};
 
     this.get = function () {
-        return menu;
+        return orderKeys(menu);
     };
 
 
@@ -1805,7 +1804,25 @@ var Sections = function () {
         curLevel[levels[levels.length - 1]][schema] = config;
     };
 };
+function orderKeys(obj) {
 
+    var keys = Object.keys(obj).sort(function keyOrder(k1, k2) {
+        if (k1 < k2) return -1;
+        else if (k1 > k2) return +1;
+        else return 0;
+    });
+
+    var i, after = {};
+    for (i = 0; i < keys.length; i++) {
+        after[keys[i]] = obj[keys[i]];
+        delete obj[keys[i]];
+    }
+
+    for (i = 0; i < keys.length; i++) {
+        obj[keys[i]] = after[keys[i]];
+    }
+    return obj;
+}
 (function () {
     'use strict';
     angular.module('injectorApp')
@@ -2165,7 +2182,11 @@ var Sections = function () {
                         if(f.type == 'array') {
                             if(f.items && f.items.type == 'string' && !f.items.format) {
                                 return true;
-                            } else {
+                            }
+                            if(f.items && f.items.type == 'object' && f.items.format=="available-search") {
+                                return true;
+                            }
+                            else {
                                 return false;
                             }
                         } if(f.type == 'object') {
@@ -2635,9 +2656,11 @@ var Sections = function () {
     'use strict';
 
     angular.module('injectorApp')
-        .controller('CreateController', ['$scope', '$http', '$location', '$routeParams', 'models', '$controller', function ($scope, $http, $location, $routeParams, models, $controller) {
+        .controller('CreateController', ['$scope', '$http', '$location', '$routeParams', 'models', '$controller', 'common', function ($scope, $http, $location, $routeParams, models, $controller,common) {
             var modelName = $routeParams.schema;
             $scope.action = "create";
+            $scope.common=common;
+
             models.getModel(modelName, function (m) {
                 if (!m.config.post) {
                     $location.path('/model/' + modelName);
@@ -2674,10 +2697,11 @@ var Sections = function () {
     'use strict';
 
     angular.module('injectorApp')
-        .controller('UpdateController', ['$scope', '$http', '$routeParams', '$location', 'models', '$controller', function ($scope, $http, $routeParams, $location, models, $controller) {
+        .controller('UpdateController', ['$scope', '$http', '$routeParams', '$location', 'models', '$controller', 'common', function ($scope, $http, $routeParams, $location, models, $controller,common) {
             var modelName = $routeParams.schema;
             var id = $routeParams.id;
             var shard = $routeParams.shard;
+            $scope.common=common;
 
             models.getModel(modelName, function (m) {
                 models.getDocument(modelName, id, shard, function (document) {
