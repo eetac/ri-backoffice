@@ -111,7 +111,7 @@
                     var sch = models.getFieldFromSchema(field, schema);
                     if(sch && sch.format === 'date') {
                         if(s && s !=='') {
-                            s = new Date(Date.parse(s)).toLocaleString();
+                            s = new Date(Date.parse(s)).toJSON();
                         }
                     }
                     return (s === undefined || s === "") ? "<empty>" : s;
