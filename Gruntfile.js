@@ -193,6 +193,7 @@ module.exports = function (grunt) {
                             '<%= config.srcPath %>schema-form-assets/angular-schema-form-new-image/dist/bootstrap-new-imageinjector.js',
                             '<%= config.srcPath %>schema-form-assets/angular-schema-form-image/dist/bootstrap-imageinjector.js',
                             '<%= config.srcPath %>schema-form-assets/angular-schema-form-galleryimage/dist/bootstrap-galleryimage.js',
+                            '<%= config.srcPath %>schema-form-assets/angular-schema-form-geojson/dist/bootstrap-geojson.js',
                             '<%= config.srcPath %>schema-form-assets/angular-schema-form-file/dist/bootstrap-fileinjector.js',
                             '<%= config.srcPath %>schema-form-assets/angular-schema-form-mixed/dist/bootstrap-mixed.js',
                             '<%= config.srcPath %>schema-form-assets/angular-schema-form-button/dist/bootstrap-button.js',
@@ -292,6 +293,9 @@ module.exports = function (grunt) {
                     '<%= config.bowerFolder %>angular-schema-form-colorpicker/bootstrap-colorpicker.min.js',
                     '<%= config.bowerFolder %>ng-droplet/dist/ng-droplet.min.js',
                     '<%= config.bowerFolder %>html2canvas/build/html2canvas.min.js',
+                    '<%= config.bowerFolder %>angular-simple-logger/dist/angular-simple-logger.min.js',
+                    '<%= config.bowerFolder %>leaflet/dist/leaflet.js',
+                    '<%= config.bowerFolder %>ui-leaflet/dist/ui-leaflet.min.js',
 
                     '<%= config.distFolder %><%= config.appName %>-angular-libs.min.temp.js',
                 ],
@@ -332,6 +336,9 @@ module.exports = function (grunt) {
                     '<%= config.bowerFolder %>angular-schema-form-colorpicker/bootstrap-colorpicker.js',
                     '<%= config.bowerFolder %>ng-droplet/dist/ng-droplet.js',
                     '<%= config.bowerFolder %>html2canvas/build/html2canvas.js',
+                    '<%= config.bowerFolder %>angular-simple-logger/dist/angular-simple-logger.min.js',
+                    '<%= config.bowerFolder %>leaflet/dist/leaflet.js',
+                    '<%= config.bowerFolder %>ui-leaflet/dist/ui-leaflet.min.js',
 
                     '<%= config.distFolder %><%= config.appName %>-angular-libs.js',
                 ],

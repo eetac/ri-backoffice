@@ -65,7 +65,9 @@
     "angular-animate": "*",
     "angular-translate": "*",
     "angular-translate-loader-partial": "*",
-    "angular-translate-storage-local": "*"
+    "angular-translate-storage-local": "*",
+    "ui-leaflet": "^2.0.0",
+    "angular-simple-logger": "^0.1.7"
   },
   "resolutions": {
     "angular": "1.4.2",

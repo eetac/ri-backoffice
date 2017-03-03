@@ -1,0 +1,7 @@
+<link rel="stylesheet" href="css/leaflet/dist/leaflet.css"/>
+<div class="form-group" ng-class="{'has-error': hasError()}">
+    <label class="control-label" ng-show="showTitle()">{{form.title}}</label>
+    <leaflet id="map" lf-map ng-model="$$value$$" width="100%" lf-center="center || {}" markers="markers" height="480px"></leaflet>
+    <!--<leaflet id="map" width="100%" height="480px"></leaflet>-->
+    <span class="help-block">{{ (hasError() && errorMessage(schemaError())) || form.description}}</span>
+</div>
