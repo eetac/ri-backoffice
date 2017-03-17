@@ -408,6 +408,7 @@
 
                         document.body.appendChild(form);
                         form.submit();
+                        document.body.removeChild(form);
                     };
 
                     service.getGraph = function (modelName, graphID, cb) {
