@@ -382,10 +382,6 @@
                     service.postAsForm = function (path, params, method, file) {
                         method = method || "post"; // Set method to post by default if not specified.
 
-                        if (file) {
-                            console.log("FILE", file);
-                        }
-
                         console.log("POST AS FORM", path, params, method, file);
 
                         // The rest of this code assumes you are not using a library.
@@ -410,6 +406,7 @@
                             }
                         }
 
+                        document.body.appendChild(form);
                         form.submit();
                     };
 
