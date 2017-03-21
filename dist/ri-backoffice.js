@@ -842,7 +842,7 @@
 
                             query.format = format;
 
-                            service.postAsForm(prefix + '/' + path + '/export', query, "POST", file);
+                            service.postAsForm(prefix + '/' + path + '/import', query, "POST", file);
                             cb();
                         });
                     };
