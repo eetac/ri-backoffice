@@ -12,8 +12,13 @@
                 });
             };
 
-            var emit = function () {
-                $rootScope.$emit('flashMessage', messages[0], cleanup);
+            var emit = function (event, url, oldUrl) {
+                if (oldUrl && oldUrl.indexOf('/login') != -1) {
+                    messages = [];
+                    $rootScope.$emit('flashMessage', undefined, cleanup);
+                } else {
+                    $rootScope.$emit('flashMessage', messages[0], cleanup);
+                }
             };
 
             $rootScope.$on('$locationChangeSuccess', emit);
@@ -100,6 +105,11 @@
                             $scope.messages = data.messages;
                             $scope.message = data.message;
                             //done();
+                        } else {
+                            $scope.type = undefined;
+                            $scope.title = undefined;
+                            $scope.messages = undefined;
+                            $scope.message = undefined;
                         }
                     }
                 }]
